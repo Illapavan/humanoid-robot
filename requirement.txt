@@ -1,0 +1,5 @@
+Flask
+python-dotenv
+langchain
+openai==0.27.0
+redis==4.4.2
