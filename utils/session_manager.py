@@ -4,7 +4,7 @@ import json
 
 class SessionManager:
     def __init__(self):
-        self.redis_client = redis.Host(host="localhost", port=6379, db=0)
+        self.redis_client = redis.Redis(host="localhost", port=6379, db=0)
 
     def create_session(self):
         session_id = str(uuid.uuid4())
