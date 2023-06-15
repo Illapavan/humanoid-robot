@@ -7,7 +7,7 @@ session_manager = SessionManager()
 
 def memory_conversational_chat():
 
-    session_id = request.headers.get("session_id")
+    session_id = request.headers.get("session-id")
     conversation_memory = session_manager.get_conversation_memory(session_id)
     body = request.get_json()
     user_input = body.get("message")
