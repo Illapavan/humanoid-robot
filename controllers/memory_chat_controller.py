@@ -1,6 +1,6 @@
 from flask import request, jsonify
-from utils.chat_openai import ChatOpenAI
-from utils.session_manager import SessionManager
+from utils.openai_util import ChatOpenAI
+from utils.session_util import SessionManager
 
 llm = ChatOpenAI(temperature=0.8)
 session_manager = SessionManager()

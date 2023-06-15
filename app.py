@@ -1,6 +1,6 @@
 from flask import Flask
-from routes.memory_chat_routes import memory_conversational_chat
-from routes.session_routes import new_session
+from controllers.memory_chat_controller import memory_conversational_chat
+from controllers.sessions_controller import new_session
 
 app = Flask(__name__)
 

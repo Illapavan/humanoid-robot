@@ -8,7 +8,7 @@ class ChatOpenAI:
         self.max_tokens = max_tokens
 
     def generate_response(self, conversation, question):
-        openai.api_key = self.api_key
+        openai.api_key = os.environ.get('OPENAI_API_KEY')
         prompt = self._format_conversation(conversation)
         response = openai.Completion.create(
             engine="text-davinci-003",

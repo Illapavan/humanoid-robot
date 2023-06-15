@@ -1,5 +1,5 @@
 from flask import jsonify
-from utils.session_manager import SessionManager
+from utils.session_util import SessionManager
 
 session_manager = SessionManager()
 
