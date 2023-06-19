@@ -8,4 +8,4 @@ app.route('/api/v1/memory-conversational-chat', methods=["POST"])(memory_convers
 app.route('/api/v1/new-session', methods=["POST"])(new_session)
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0', port=5000)
