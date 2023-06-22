@@ -19,8 +19,6 @@ session_manager = SessionManager()
 
 search = SerpAPIWrapper()
 
-
-
 def memory_conversational_chat():
     session_id = request.headers.get("session-id")
     if session_id is None:
@@ -55,7 +53,6 @@ def memory_conversational_chat():
 
         memory = ConversationBufferMemory(memory_key="chat_history", chat_memory=message_history)
 
-
         llm_chain = LLMChain(llm=OpenAI(temperature=0), prompt=prompt)
         agent = ZeroShotAgent(llm_chain=llm_chain, tools=tools, verbose=True)
         agent_chain = AgentExecutor.from_agent_and_tools(agent=agent, tools=tools, verbose=True, memory=memory)
@@ -68,20 +65,17 @@ def memory_conversational_chat():
         }
 
         return jsonify(response_data)
-    except OutputParserException as e:
-        response = str(e)
-        response = response.removeprefix("Could not parse LLM output: `").removesuffix("`")
-        error_response = {
-            "response": response,
-        }
-        return jsonify(error_response), 500
-
     except Exception as e:
-        error_response = {
-            "error": "Internal Server Error",
-            "message": str(e),
-        }
-        return jsonify(error_response), 500    
-
-
-    
+        response = str(e)
+        if response.startswith("Could not parse LLM output: `"):
+            response = response.removeprefix("Could not parse LLM output: `").removesuffix("`")
+            response_data = {
+                "response": response,
+            }
+            return jsonify(response_data)
+        else:
+            error_response = {
+                "error": "Internal Server Error",
+                "message": str(e),
+            }
+            return jsonify(error_response), 500
