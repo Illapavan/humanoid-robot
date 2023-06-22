@@ -5,7 +5,7 @@ from langchain.memory.chat_message_histories import RedisChatMessageHistory
 
 class SessionManager:
     def __init__(self):
-        self.redis_client = redis.Redis(host="redis", port=6379, db=0)
+        self.redis_client = redis.Redis(host="localhost", port=6379, db=0)
 
     def create_session(self):
         session_id = str(uuid.uuid4())
