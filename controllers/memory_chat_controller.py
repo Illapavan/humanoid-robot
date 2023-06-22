@@ -2,13 +2,10 @@ from flask import request, jsonify, abort
 from utils.openai_util import ChatOpenAI
 from utils.session_util import SessionManager
 # from utils.pinecone_utils import PineconeManager
-from langchain.agents import AgentType
 from langchain.memory import ConversationBufferMemory
 from langchain.utilities import SerpAPIWrapper
-from langchain.agents import initialize_agent
-from langchain.agents import Tool
 from langchain import OpenAI, LLMChain
-from langchain.agents import ZeroShotAgent, Tool, AgentExecutor
+from langchain.agents import ZeroShotAgent, Tool, AgentExecutor, AgentType, initialize_agent
 from langchain.schema import OutputParserException
 from dotenv import load_dotenv
 
