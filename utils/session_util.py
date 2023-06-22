@@ -19,6 +19,6 @@ class SessionManager:
             message_history = RedisChatMessageHistory(message_history_data)
             return message_history
         else:
-            return RedisChatMessageHistory()
+            return RedisChatMessageHistory(session_id=session_id)
 
 
