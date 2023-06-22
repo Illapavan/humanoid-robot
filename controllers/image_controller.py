@@ -12,8 +12,6 @@ def generate_dalle2_image(text_prompt):
     return response["data"]
 
 
-
-
 def image_generator():
     body = request.get_json()
     text_prompt = body.get("text_prompt")
@@ -24,6 +22,23 @@ def image_generator():
     }
 
     return jsonify(response)
+
+
+def image_editor():
+    body = request.get_json()
+    image_url = body.get("image")
+    current_image = requests.get(image_url)    
+
+    # variation here 
+
+    variation_response = openai.Image.create_variation(
+    image=current_image,  
+    n=2,
+    size="1024x1024",
+    response_format="url",
+    )
+    print(variation_response)
+
 
 
 
