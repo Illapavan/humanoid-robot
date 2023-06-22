@@ -3,3 +3,5 @@ python-dotenv
 langchain
 openai
 redis
+pinecone-client
+google-search-results
