@@ -8,18 +8,9 @@ load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def generate_dalle2_image(text_prompt):
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=text_prompt,
-        temperature=0,
-        max_tokens=64,
-    )
+    response = openai.Image.create(prompt=text_prompt, n=3, size="256x256")
+    return response["data"]
 
-    generated_image = response.choices[0].text.strip()
-
-    image_url = extract_image_url(generated_image)
-
-    return image_url
 
 
 
@@ -35,11 +26,4 @@ def image_generator():
     return jsonify(response)
 
 
-def extract_image_url(generated_image):
-    # Parse the generated image to extract the image URL
-    start_index = generated_image.find("(") + 1
-    end_index = generated_image.find(")")
-    image_url = generated_image[start_index:end_index]
-
-    return image_url
 
