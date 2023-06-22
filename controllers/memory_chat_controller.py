@@ -10,8 +10,9 @@ from langchain.agents import Tool
 from langchain import OpenAI, LLMChain
 from langchain.agents import ZeroShotAgent, Tool, AgentExecutor
 from langchain.schema import OutputParserException
+from dotenv import load_dotenv
 
-
+load_dotenv()
 llm = ChatOpenAI(temperature=0.8)
 session_manager = SessionManager()
 # pinecone = PineconeManager()
