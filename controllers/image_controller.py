@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import request, jsonify, abort
 import requests
 from dotenv import load_dotenv
 import os
@@ -15,6 +15,8 @@ def generate_dalle2_image(text_prompt):
 def image_generator():
     body = request.get_json()
     text_prompt = body.get("text_prompt")
+    if text_prompt is None:
+        abort(400, "Bad Request: Input can't be empty")
 
     generated_image = generate_dalle2_image(text_prompt)
     response = {
