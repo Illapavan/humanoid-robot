@@ -1,7 +1,7 @@
 from flask import request, jsonify, abort
 from utils.openai_util import ChatOpenAI
 from utils.session_util import SessionManager
-from utils.pinecone_utils import PineconeManager
+# from utils.pinecone_utils import PineconeManager
 from langchain.agents import AgentType
 from langchain.memory import ConversationBufferMemory
 from langchain.utilities import SerpAPIWrapper
@@ -14,7 +14,7 @@ from langchain.schema import OutputParserException
 
 llm = ChatOpenAI(temperature=0.8)
 session_manager = SessionManager()
-pinecone = PineconeManager()
+# pinecone = PineconeManager()
 
 search = SerpAPIWrapper()
 
