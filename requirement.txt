@@ -5,3 +5,4 @@ openai
 redis
 pinecone-client
 google-search-results
+flask-cors
