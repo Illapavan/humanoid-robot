@@ -16,6 +16,7 @@ from langchain.memory import ConversationBufferMemory
 from langchain.utilities import SerpAPIWrapper
 from langchain import OpenAI, LLMChain
 from langchain.agents import ZeroShotAgent, Tool, AgentExecutor, AgentType, initialize_agent
+import os
 
 load_dotenv()
 llm = ChatOpenAI(temperature=0.8)
@@ -90,7 +91,7 @@ def pdf_reader():
     body = request.get_json()
     pdf_url = body.get("pdf_url")
     if pdf_url is not None:
-        s3 = boto3.client("s3")
+        s3 = boto3.client("s3", aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"), aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"))
         bucket, key = parse_s3_url(pdf_url)
 
         obj = s3.get_object(Bucket=bucket, Key=key)
