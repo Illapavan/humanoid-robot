@@ -7,3 +7,4 @@ boto3
 pinecone-client
 google-search-results
 flask-cors
+PyPDF2
