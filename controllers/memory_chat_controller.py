@@ -11,6 +11,7 @@ from langchain.vectorstores import FAISS
 from langchain.chains.question_answering import load_qa_chain
 from langchain.llms import OpenAI
 from langchain.callbacks import get_openai_callback
+from urllib.parse import urlparse
 
 llm = ChatOpenAI(temperature=0.8)
 session_manager = SessionManager()
@@ -40,15 +41,15 @@ def memory_conversational_chat():
 
 def pdf_reader():
 
-    data = request.get_json()
-    pdf = data.get("pdf")
-    if pdf is not None:
+    body = request.get_json()
+    pdf_url = body.get("pdf_url")
+    if pdf_url is not None:
         s3 = boto3.client("s3")
-        obj = s3.get_object(Bucket="metropoc", Key="Setup+Docker+in+Windows.pdf")
-        print(obj)
+        bucket, key = parse_s3_url(pdf_url)
+
+        obj = s3.get_object(Bucket=bucket, Key=key)
         fs = obj['Body'].read()
         pdf_reader = PdfReader(BytesIO(fs))
-        # pdf_reader = PdfReader(pdf)
         text = ""
         for page in pdf_reader.pages:
             text += page.extract_text()
@@ -67,14 +68,21 @@ def pdf_reader():
         knowledge_base = FAISS.from_texts(chunks, embeddings)
         
         # show user input
-        user_question = data.get("question")
+        user_question = body.get("question")
         if user_question:
             docs = knowledge_base.similarity_search(user_question)
             
             llm = OpenAI()
             chain = load_qa_chain(llm, chain_type="stuff")
-            with get_openai_callback() as cb:
-                response = chain.run(input_documents=docs, question=user_question)
-                print(cb)
-            print(response)
-    
+            response = chain.run(input_documents=docs, question=user_question)
+            response_data = {
+            "response": response,
+            }
+            return jsonify(response_data)
+
+def parse_s3_url(pdf_url):
+    parsed_url = urlparse(pdf_url)
+    bucket = parsed_url.netloc.split('.')[0]
+    key = parsed_url.path.lstrip('/')
+
+    return bucket, key
