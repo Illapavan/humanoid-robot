@@ -3,6 +3,7 @@ python-dotenv
 langchain
 openai
 redis
+boto3
 pinecone-client
 google-search-results
 flask-cors
