@@ -8,3 +8,4 @@ pinecone-client
 google-search-results
 flask-cors
 PyPDF2
+tiktoken
