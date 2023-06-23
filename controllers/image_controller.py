@@ -18,7 +18,7 @@ def image_generator():
     body = request.get_json()
     text_prompt = body.get("text_prompt")
     if text_prompt is None:
-        abort(400, "Bad Request: Input can't be empty")
+        abort(400, "Bad Request: Input can't be empty")   
 
     try: 
         generated_image = generate_dalle2_image(text_prompt)
@@ -73,6 +73,57 @@ def image_variation():
     except Exception as e:
         abort(500, f"Internal Server Error: {str(e)}")
     
+
+def generate_mask(image_url):
+    response = requests.get(image_url)
+    image = Image.open(io.BytesIO(response.content))
+    image_data = io.BytesIO()
+    image.save(image_data, format="PNG")
+    mask = Image.new("RGBA", (1024, 1024), (0, 0, 0, 1))
+    for x in range(1024):
+        for y in range(1024 // 2, 1024):
+            mask.putpixel((x, y), (0, 0, 0, 0))
+    masked_image = Image.alpha_composite(image.convert("RGBA"), mask)
+    masked_image_data = io.BytesIO()
+    masked_image.save(masked_image_data, format="PNG")
+    return masked_image_data.getvalue()
+
+
+def image_editor():
+    body = request.get_json()
+    image_url = body.get("image_url")
+    text = body.get("text")
+
+    if image_url is None or text is None:
+        abort(400, "Bad : Request - image_url or text is missing")
+
+    response = requests.get(image_url)
+    image = Image.open(io.BytesIO(response.content))
+    image_data = io.BytesIO()
+
+    if len(image_data.read()) > 4*1024*1024:
+        raise ValueError("Image file size must be less than or equal to 4MB")
+ 
+
+    get_mask = generate_mask(image_url)
+
+
+    current_image = response.content
+
+    edit_response = openai.Image.create_edit(
+    image=current_image,
+    mask=get_mask,
+    prompt=text,
+    n=1,
+    size="1024x1024",
+    response_format="url",)
+
+    updated_image_url = edit_response["data"][0]
+    return jsonify(updated_image_url)
+
+     
+    
+
 
 
 
