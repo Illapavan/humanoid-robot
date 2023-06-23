@@ -3,5 +3,10 @@ python-dotenv
 langchain
 openai
 redis
+boto3
 pinecone-client
 google-search-results
+flask-cors
+PyPDF2
+tiktoken
+faiss-cpu
