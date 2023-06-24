@@ -78,9 +78,9 @@ def generate_mask():
     width, height = 1024, 1024
     mask = Image.new("RGBA", (width, height), (0, 0, 0, 1))  # Create an opaque image mask
 
-    for x in range(width):
-        for y in range(height // 2, height):  # Only loop over the bottom half of the mask
-            mask.putpixel((x, y), (0, 0, 0, 0))
+    # for x in range(width):
+    #     for y in range(height // 2, height):  # Only loop over the bottom half of the mask
+    #         mask.putpixel((x, y), (0, 0, 0, 0))
 
     masked_image_data = io.BytesIO()
     mask.save(masked_image_data, format="PNG")
