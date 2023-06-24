@@ -74,19 +74,19 @@ def image_variation():
         abort(500, f"Internal Server Error: {str(e)}")
     
 
-def generate_mask(image_url):
-    response = requests.get(image_url)
-    image = Image.open(io.BytesIO(response.content))
-    image_data = io.BytesIO()
-    image.save(image_data, format="PNG")
-    mask = Image.new("RGBA", (1024, 1024), (0, 0, 0, 1))
-    for x in range(1024):
-        for y in range(1024 // 2, 1024):
+def generate_mask():
+    width, height = 1024, 1024
+    mask = Image.new("RGBA", (width, height), (0, 0, 0, 1))  # Create an opaque image mask
+
+    for x in range(width):
+        for y in range(height // 2, height):  # Only loop over the bottom half of the mask
             mask.putpixel((x, y), (0, 0, 0, 0))
-    masked_image = Image.alpha_composite(image.convert("RGBA"), mask)
+
     masked_image_data = io.BytesIO()
-    masked_image.save(masked_image_data, format="PNG")
+    mask.save(masked_image_data, format="PNG")
+
     return masked_image_data.getvalue()
+
 
 
 def image_editor():
@@ -105,8 +105,12 @@ def image_editor():
         raise ValueError("Image file size must be less than or equal to 4MB")
  
 
-    get_mask = generate_mask(image_url)
-
+    get_mask = generate_mask()
+    # image_stream = io.BytesIO(get_mask)
+    # image = Image.open(image_stream)
+    # image.show()
+    # return
+    
 
     current_image = response.content
 
