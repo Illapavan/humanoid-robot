@@ -35,6 +35,7 @@ def memory_conversational_chat():
         user_input = body.get("message")
 
         message_history.add_user_message(str({"role": "user", "content": user_input}))
+        db_chain = session_manager.getdb_connection()
 
         tools = [
             Tool(
@@ -42,6 +43,16 @@ def memory_conversational_chat():
                 func=search.run,
                 description="useful for when you need to answer questions about current events or the current state of the world"
             ),
+            Tool(
+                name = "Agents Database",
+                func = db_chain.run,
+                description = "useful to fetch the agents info and their about information"
+            ),
+            Tool(
+                name = "Event rooms",
+                func = db_chain.run,
+                description = "useful to fetch the scheduled rooms information"
+            )
         ]
         prefix = """Have a conversation with a human, answering the following questions as best you can. You have access to the following tools:"""
         suffix = """Begin!"
