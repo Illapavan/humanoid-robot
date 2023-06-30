@@ -79,7 +79,7 @@ def generate_mask():
     mask = Image.new("RGBA", (width, height), (0, 0, 0, 1))  # Create an opaque image mask
 
     for x in range(width):
-        for y in range(height):  # Only loop over the bottom half of the mask
+        for y in range(height//2, height):  # Only loop over the bottom half of the mask
             mask.putpixel((x, y), (0, 0, 0, 0))
 
     masked_image_data = io.BytesIO()
