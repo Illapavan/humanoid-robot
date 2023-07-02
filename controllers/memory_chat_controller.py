@@ -25,13 +25,13 @@ session_manager = SessionManager()
 
 search = SerpAPIWrapper()
 
-def memory_conversational_chat():
+def memory_conversational_chat(body):
     session_id = request.headers.get("session-id")
     if session_id is None:
         abort(400, "Bad Request: session-id header is missing")
     try:    
         message_history = session_manager.get_conversation_memory(session_id)
-        body = request.get_json()
+        # body = request.get_json()
         user_input = body.get("message")
 
         message_history.add_user_message(str({"role": "user", "content": user_input}))
@@ -97,9 +97,9 @@ def memory_conversational_chat():
             }
             return jsonify(error_response), 500
 
-def pdf_reader():
+def pdf_reader(body):
 
-    body = request.get_json()
+    # body = request.get_json()
     pdf_url = body.get("pdf_url")
     if pdf_url is not None:
         s3 = boto3.client("s3", aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"), aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"))

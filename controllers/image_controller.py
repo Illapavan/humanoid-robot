@@ -14,8 +14,8 @@ def generate_dalle2_image(text_prompt):
     return response["data"]
 
 
-def image_generator():
-    body = request.get_json()
+def image_generator(body):
+    # body = request.get_json()
     text_prompt = body.get("text_prompt")
     if text_prompt is None:
         abort(400, "Bad Request: Input can't be empty")   
@@ -31,9 +31,9 @@ def image_generator():
         abort(500, f"Internal Server Error: Failed to generate image ({str(e)})")    
 
 
-def image_variation():
+def image_variation(body):
     try:
-        body = request.get_json()
+        # body = request.get_json()
         image_url = body.get("image_url")
         if image_url is None:
             abort(400, "Bad Request: Input can't be empty")
@@ -89,8 +89,8 @@ def generate_mask():
 
 
 
-def image_editor():
-    body = request.get_json()
+def image_editor(body):
+    # body = request.get_json()
     image_url = body.get("image_url")
     text = body.get("text")
 
