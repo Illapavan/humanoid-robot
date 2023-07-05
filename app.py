@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from controllers.memory_chat_controller import memory_conversational_chat, pdf_reader
 from controllers.sessions_controller import new_session
@@ -20,7 +20,7 @@ def handle_assistant():
     type = data.get('type')
 
     if type == "chat":
-        return memory_conversational_chat(data)
+       return memory_conversational_chat(data)
     elif type == "new_session":
         return new_session()    
     elif type == "pdf_reader":
@@ -31,6 +31,7 @@ def handle_assistant():
         return image_variation(data)
     elif type == 'image_editor':
         return image_editor(data)
+    return jsonify({"message": "Invalid request type."})    
         
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)

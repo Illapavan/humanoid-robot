@@ -70,12 +70,12 @@ def memory_conversational_chat(body):
 
         memory = ConversationBufferMemory(memory_key="chat_history", chat_memory=message_history)
 
-        llm_chain = LLMChain(llm=OpenAI(temperature=0), prompt=prompt)
+        llm_chain = LLMChain(llm=OpenAI(model_name = "gpt-4", temperature=0), prompt=prompt)
         agent = ZeroShotAgent(llm_chain=llm_chain, tools=tools, verbose=True)
-        agent_chain = AgentExecutor.from_agent_and_tools(agent=agent, tools=tools, verbose=True, memory=memory)
+        agent_chain = AgentExecutor.from_agent_and_tools(agent=agent, tools=tools, verbose=True, memory=memory, handle_parsing_errors=True)
         response = agent_chain.run(user_input)
 
-        message_history.add_ai_message(user_input)
+        message_history.add_ai_message(response)
 
         response_data = {
             "response": response,
