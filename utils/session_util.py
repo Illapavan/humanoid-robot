@@ -20,7 +20,9 @@ class SessionManager:
     def get_conversation_memory(self, session_id):
         message_history_data = self.redis_client.get(session_id)
         if message_history_data is not None:
+            print(message_history_data)
             message_history_data = message_history_data.decode("utf-8")  # Decode bytes to str
+            print(message_history_data)
             message_history = RedisChatMessageHistory(message_history_data)
             return message_history
         else:
@@ -40,4 +42,9 @@ class SessionManager:
         db_chain = SQLDatabaseChain.from_llm(llm, db, verbose=True)
         return db_chain
 
-
+    def get_session_info(self, session_id):
+        print(session_id)
+        value = self.redis_client.get(session_id)
+        print(value)
+        value_str = value.decode('utf-8')
+        return value_str

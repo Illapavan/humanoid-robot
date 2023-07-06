@@ -5,6 +5,7 @@ from PIL import Image
 import os
 import io
 import openai
+from transformers import pipeline
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -126,8 +127,22 @@ def image_editor(body):
     return jsonify(updated_image_url)
 
      
-    
+def virtual_questioning():
+    data = request.get_json()
+    url = data.get("image-url")
+    question = data.get("question")
 
+    if url is None or question is None:
+        abort(400, "Bad : Request - image_url or text is missing")
+
+    image = Image.open(requests.get(url, stream=True).raw)
+    vqa_pipeline = pipeline("visual-question-answering")
+    responseData = vqa_pipeline(image, question, top_k=1)
+    response = responseData[0]['answer']
+    response = {
+        "response" : response
+    }
+    return jsonify(response)
 
 
 
