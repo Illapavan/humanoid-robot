@@ -11,7 +11,7 @@ def upload_file():
         return jsonify({'error' : 'No file upload'})
 
     file = request.files['file']
-    filename = file.name
+    filename = file.filename
     s3_client = boto3.client('s3')
 
     try:
@@ -19,12 +19,8 @@ def upload_file():
     except botocore.exceptions.ClientError as e:
         return jsonify({'error': str(e)})
 
-    s3_unsigned_url = s3_client.generate_presigned_url(
-        'get_object',
-        Params={'Bucket': os.getenv("S3_BUCKET_NAME"), 'Key': filename},
-        ExpiresIn=3600  # URL expiration time in seconds (optional)
-    )
+    s3_url = f"https://{os.getenv('S3_BUCKET_NAME')}.s3.amazonaws.com/{filename}"
 
-    return jsonify({'url': s3_unsigned_url})
+    return jsonify({'url': s3_url})
 
 

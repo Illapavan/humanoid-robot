@@ -5,6 +5,7 @@ from PIL import Image
 import os
 import io
 import openai
+from io import BytesIO
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -74,8 +75,11 @@ def image_variation(body):
         abort(500, f"Internal Server Error: {str(e)}")
     
 
-def generate_mask():
-    width, height = 1024, 1024
+def generate_mask(image_url):
+    response = requests.get(image_url)
+    image_content = response.content
+    with Image.open(BytesIO(image_content)) as img:
+        width, height = img.size
     mask = Image.new("RGBA", (width, height), (0, 0, 0, 1))  # Create an opaque image mask
 
     for x in range(width):
@@ -90,7 +94,6 @@ def generate_mask():
 
 
 def image_editor(body):
-    # body = request.get_json()
     image_url = body.get("image_url")
     text = body.get("text")
 
@@ -105,13 +108,8 @@ def image_editor(body):
         raise ValueError("Image file size must be less than or equal to 4MB")
  
 
-    get_mask = generate_mask()
-    # image_stream = io.BytesIO(get_mask)
-    # image = Image.open(image_stream)
-    # image.show()
-    # return
+    get_mask = generate_mask(image_url)
     
-
     current_image = response.content
 
     edit_response = openai.Image.create_edit(
