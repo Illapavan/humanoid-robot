@@ -27,17 +27,19 @@ class SessionManager:
             return RedisChatMessageHistory(session_id=session_id)
 
     def getdb_connection(self):
-        prefixString = "mysql+pymysql://"
-        username = os.getenv('DBUSERNAME')
-        password = os.getenv('DBPASSWORD')
-        address = os.getenv('DBADDRESS')
-        dbName = os.getenv('DBNAME')
-
+        
         # uri = 'mysql+pymysql://aduser:adxyz123@127.0.0.1:3309/agentdesks'
-        uri = prefixString+username+":"+password+"@"+address+"/"+dbName
+        uri = self.getDbConnectionURI()
         db = SQLDatabase.from_uri(uri, include_tables=['scheduled_event_rooms', 'signup_and_login_table'], sample_rows_in_table_info=2)
         llm = OpenAI(model_name = "gpt-4", temperature=0, verbose=True)
         db_chain = SQLDatabaseChain.from_llm(llm, db, verbose=True)
         return db_chain
 
-
+    def getDbConnectionURI(self):
+        prefixString = "mysql+pymysql://"
+        username = os.getenv('DBUSERNAME')
+        password = os.getenv('DBPASSWORD')
+        address = os.getenv('DBADDRESS')
+        dbName = os.getenv('DBNAME')
+        uri = prefixString+username+":"+password+"@"+address+"/"+dbName
+        return uri

@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from controllers.memory_chat_controller import memory_conversational_chat, pdf_reader
-from controllers.sessions_controller import new_session
+from controllers.sessions_controller import new_session, testRoute
 from controllers.image_controller import image_generator, image_variation, image_editor
 
 app = Flask(__name__)
@@ -13,6 +13,8 @@ cors = CORS(app)
 # app.route('/api/v1/generate-image-from-text', methods=["POST"])(image_generator)
 # app.route('/api/v1/generate-image-variation', methods=["POST"])(image_variation)
 # app.route('/api/v1/image-editor', methods=["POST"])(image_editor)
+
+app.route('/api/v1/test-connection', methods=["GET"])(testRoute)
 
 @app.route('/api/v1/assistant', methods = ["POST"])
 def handle_assistant():
