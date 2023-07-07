@@ -110,7 +110,7 @@ def image_editor(body):
         raise ValueError("Image file size must be less than or equal to 4MB")
  
 
-    get_mask = generate_mask()
+    get_mask = generate_mask(image_url)
     # image_stream = io.BytesIO(get_mask)
     # image = Image.open(image_stream)
     # image.show()
