@@ -13,8 +13,7 @@ cors = CORS(app)
 # app.route('/api/v1/generate-image-from-text', methods=["POST"])(image_generator)
 # app.route('/api/v1/generate-image-variation', methods=["POST"])(image_variation)
 # app.route('/api/v1/image-editor', methods=["POST"])(image_editor)
-app.route('/api/v1/virtual-questioning', methods = ["POST"])(virtual_questioning)
-app.route('/api/v1/get-allsession-info', methods=["POST"])(get_chat_session)
+# app.route('/api/v1/virtual-questioning', methods = ["POST"])(virtual_questioning)
 
 @app.route('/api/v1/assistant', methods = ["POST"])
 def handle_assistant():
@@ -33,6 +32,8 @@ def handle_assistant():
         return image_variation(data)
     elif type == 'image_editor':
         return image_editor(data)
+    elif type == 'virtual_questioning':
+        return virtual_questioning(data)    
     return jsonify({"message": "Invalid request type."})    
         
 if __name__ == "__main__":

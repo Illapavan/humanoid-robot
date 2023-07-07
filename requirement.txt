@@ -10,3 +10,6 @@ flask-cors
 PyPDF2
 tiktoken
 faiss-cpu
+torch
+torchvision
+torchaudio

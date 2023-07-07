@@ -127,13 +127,13 @@ def image_editor(body):
     return jsonify(updated_image_url)
 
      
-def virtual_questioning():
-    data = request.get_json()
-    url = data.get("image-url")
+def virtual_questioning(data):
+    # data = request.get_json()
+    url = data.get("image_url")
     question = data.get("question")
 
     if url is None or question is None:
-        abort(400, "Bad : Request - image_url or text is missing")
+        abort(400, "Bad : Request - image_url or question is missing")
 
     image = Image.open(requests.get(url, stream=True).raw)
     vqa_pipeline = pipeline("visual-question-answering")
