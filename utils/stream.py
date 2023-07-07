@@ -12,7 +12,10 @@ def create_stream_token():
     data = request.get_json()
     id = data.get('id')
     try:
-        return server_client.create_token(id)
+        token = {
+            "token": server_client.create_token(id),
+        }
+        return jsonify(token), 200
     except Exception as e:
         error_response = {
             "error": "Internal Server Error",
