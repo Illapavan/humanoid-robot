@@ -10,3 +10,4 @@ flask-cors
 PyPDF2
 tiktoken
 faiss-cpu
+stream-chat
