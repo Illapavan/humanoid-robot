@@ -5,6 +5,7 @@ from PIL import Image
 import os
 import io
 import openai
+from transformers import pipeline
 from io import BytesIO
 
 load_dotenv()
@@ -94,6 +95,7 @@ def generate_mask(image_url):
 
 
 def image_editor(body):
+    # body = request.get_json()
     image_url = body.get("image_url")
     text = body.get("text")
 
@@ -108,8 +110,13 @@ def image_editor(body):
         raise ValueError("Image file size must be less than or equal to 4MB")
  
 
-    get_mask = generate_mask(image_url)
+    get_mask = generate_mask()
+    # image_stream = io.BytesIO(get_mask)
+    # image = Image.open(image_stream)
+    # image.show()
+    # return
     
+
     current_image = response.content
 
     edit_response = openai.Image.create_edit(
@@ -124,8 +131,22 @@ def image_editor(body):
     return jsonify(updated_image_url)
 
      
-    
+def virtual_questioning(data):
+    # data = request.get_json()
+    url = data.get("image_url")
+    question = data.get("question")
 
+    if url is None or question is None:
+        abort(400, "Bad : Request - image_url or question is missing")
+
+    image = Image.open(requests.get(url, stream=True).raw)
+    vqa_pipeline = pipeline("visual-question-answering")
+    responseData = vqa_pipeline(image, question, top_k=1)
+    response = responseData[0]['answer']
+    response = {
+        "response" : response
+    }
+    return jsonify(response)
 
 
 

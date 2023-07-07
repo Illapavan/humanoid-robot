@@ -31,6 +31,7 @@ def memory_conversational_chat(body):
         abort(400, "Bad Request: session-id header is missing")
     try:    
         message_history = session_manager.get_conversation_memory(session_id)
+        print(message_history)
         # body = request.get_json()
         user_input = body.get("message")
 
@@ -144,3 +145,20 @@ def parse_s3_url(pdf_url):
     key = parsed_url.path.lstrip('/')
 
     return bucket, key
+
+def virtual_questioning():
+    data = request.get_json()
+    url = data.get("image-url")
+    question = data.get("question")
+
+    if url is None or question is None:
+        abort(400, "Bad : Request - image_url or text is missing")
+
+    image = Image.open(requests.get(url, stream=True).raw)
+    vqa_pipeline = pipeline("visual-question-answering")
+    responseData = vqa_pipeline(image, question, top_k=1)
+    response = responseData[0]['answer']
+    response = {
+        "response" : response
+    }
+    return jsonify(response)
