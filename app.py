@@ -4,6 +4,8 @@ from controllers.memory_chat_controller import memory_conversational_chat, pdf_r
 from controllers.sessions_controller import new_session
 from controllers.image_controller import image_generator, image_variation, image_editor
 from controllers.upload_controller import upload_file
+from controllers.calendar_controller import getCalendarEvents
+
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -17,6 +19,7 @@ cors = CORS(app)
 # app.route('/api/v1/virtual-questioning', methods = ["POST"])(virtual_questioning)
 
 app.route('/api/v1/upload', methods=["POST"])(upload_file)
+app.route('/api/v1/getCalendarEvents', methods=["GET"])(getCalendarEvents)
 
 
 @app.route('/api/v1/assistant', methods = ["POST"])
