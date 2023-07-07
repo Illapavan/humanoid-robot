@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from controllers.memory_chat_controller import memory_conversational_chat, pdf_reader
 from controllers.sessions_controller import new_session
-from controllers.image_controller import image_generator, image_variation, image_editor, virtual_questioning
+from controllers.image_controller import image_generator, image_variation, image_editor
 from controllers.upload_controller import upload_file
 
 app = Flask(__name__)
@@ -35,9 +35,7 @@ def handle_assistant():
     elif type == "image_variation":
         return image_variation(data)
     elif type == 'image_editor':
-        return image_editor(data)
-    elif type == 'virtual_questioning':
-        return virtual_questioning(data)    
+        return image_editor(data)    
     return jsonify({"message": "Invalid request type."})    
         
 if __name__ == "__main__":
