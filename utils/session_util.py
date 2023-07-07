@@ -28,8 +28,8 @@ class SessionManager:
 
     def getdb_connection(self):
         
-        # uri = 'mysql+pymysql://aduser:adxyz123@127.0.0.1:3309/agentdesks'
-        uri = self.getDbConnectionURI()
+        uri = 'mysql+pymysql://aduser:adxyz123@127.0.0.1:3309/agentdesks'
+        # uri = self.getDbConnectionURI()
         db = SQLDatabase.from_uri(uri, include_tables=['scheduled_event_rooms', 'signup_and_login_table'], sample_rows_in_table_info=2)
         llm = OpenAI(model_name = "gpt-4", temperature=0, verbose=True)
         db_chain = SQLDatabaseChain.from_llm(llm, db, verbose=True)
@@ -43,3 +43,23 @@ class SessionManager:
         dbName = os.getenv('DBNAME')
         uri = prefixString+username+":"+password+"@"+address+"/"+dbName
         return uri
+
+    def getSessionStorage(self, sessionId):
+        modifiedSessionId = "conv_"+ sessionId
+        stored_session_data = self.redis_client.get(modifiedSessionId)
+        if stored_session_data is not None:
+            session_data = json.loads(stored_session_data)
+            return session_data
+        else:
+            return None
+    
+    def set(self, sessionId, conversation_json):
+        modifiedSessionId = "conv_"+ sessionId
+        self.redis_client.set(modifiedSessionId, conversation_json)
+
+    def get(self, sessionId):
+        modifiedSessionId = "conv_"+ sessionId
+        return self.redis_client.get(modifiedSessionId)
+
+
+

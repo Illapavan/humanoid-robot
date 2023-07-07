@@ -17,6 +17,7 @@ from langchain.utilities import SerpAPIWrapper
 from langchain import OpenAI, LLMChain
 from langchain.agents import ZeroShotAgent, Tool, AgentExecutor, AgentType, initialize_agent
 import os
+import json
 
 load_dotenv()
 llm = ChatOpenAI(temperature=0.8)
@@ -77,6 +78,25 @@ def memory_conversational_chat(body):
         response = agent_chain.run(user_input)
 
         message_history.add_ai_message(str({"role": "bot", "content": response}))
+        existing_conversation_json = session_manager.get(session_id)
+
+        if existing_conversation_json is not None:
+            existing_conversation = json.loads(existing_conversation_json)
+            existing_conversation["conversation"].append({
+            "user_question": user_input,
+            "agent_answer": response
+            })
+            updated_conversation_json = json.dumps(existing_conversation)
+            session_manager.set(session_id, updated_conversation_json)
+        else:
+            conversation = {
+            "conversation": [{
+                "user_question": user_input,
+                "agent_answer": response
+            }]
+            }
+            conversation_json = json.dumps(conversation)
+            session_manager.set(session_id, conversation_json)    
 
         response_data = {
             "response": response,

@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from controllers.memory_chat_controller import memory_conversational_chat, pdf_reader
-from controllers.sessions_controller import new_session
+from controllers.sessions_controller import new_session, getSessionInfo
 from controllers.image_controller import image_generator, image_variation, image_editor
 from controllers.upload_controller import upload_file
 
@@ -17,6 +17,7 @@ cors = CORS(app)
 # app.route('/api/v1/virtual-questioning', methods = ["POST"])(virtual_questioning)
 
 app.route('/api/v1/upload', methods=["POST"])(upload_file)
+app.route('/api/v1/getSessionData', methods =["POST"])(getSessionInfo)
 
 
 @app.route('/api/v1/assistant', methods = ["POST"])
