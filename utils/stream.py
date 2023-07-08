@@ -61,10 +61,10 @@ def add_bot_to_channel(body):
 
         bot_id = str(uuid.uuid4())
         token = server_client.create_token(bot_id, exp=None, iat=datetime.datetime.utcnow()),
-        server_client.connect_user({
+        server_client.upsert_user({
             "id": bot_id,
             "name": "Companion Bot #" + bot_id,
-        }, token)
+        })
         channel = server_client.channel(body.get("channel").get("type"), body.get("channel").get("id"))
         if channel is None:
             return
