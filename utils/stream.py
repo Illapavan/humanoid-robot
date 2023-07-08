@@ -9,7 +9,7 @@ from flask import jsonify, request
 
 # instantiate your stream client using the API key and secret
 # the secret is only used server side and gives you full access to the API
-server_client = StreamChat(api_key=os.environ.get('OPENAI_API_KEY'), api_secret=os.environ.get('OPENAI_API_KEY'))
+server_client = StreamChat(api_key=os.environ.get('STREAM_API_KEY'), api_secret=os.environ.get('STREAM_API_SECRET_ID'))
 success_response = {
     "success": "true"
 }
