@@ -1,4 +1,5 @@
 import datetime
+import uuid
 
 from stream_chat import StreamChat
 import os
@@ -58,11 +59,17 @@ def add_bot_to_channel(body):
             print(channelObject)
             return
 
+        bot_id = str(uuid.uuid4())
+        token = server_client.create_token(bot_id, exp=None, iat=datetime.datetime.utcnow()),
+        server_client.connect_user({
+            "id": bot_id,
+            "name": "Companion Bot #" + bot_id,
+        }, token)
         channel = server_client.channel(body.get("channel").get("type"), body.get("channel").get("id"))
         if channel is None:
             return
         channel.create(body.get("channel").get("created_by").get("id"))
-        channel.add_members(["bot1"], {"text": 'Companion has joined the channel.', "user_id": 'bot1'})
+        channel.add_members([bot_id], {"text": 'Companion has joined the channel.', "user_id": bot_id})
         print("Bot added")
     except Exception as e:
         print("Exception caught while adding bot to channel")
