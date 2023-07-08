@@ -76,11 +76,7 @@ def image_variation(body):
         abort(500, f"Internal Server Error: {str(e)}")
     
 
-def generate_mask(image_url):
-    response = requests.get(image_url)
-    image_content = response.content
-    with Image.open(BytesIO(image_content)) as img:
-        width, height = img.size
+def generate_mask(width, height):
     mask = Image.new("RGBA", (width, height), (0, 0, 0, 1))  # Create an opaque image mask
 
     for x in range(width):
@@ -93,39 +89,48 @@ def generate_mask(image_url):
     return masked_image_data.getvalue()
 
 
-
 def image_editor(body):
     # body = request.get_json()
     image_url = body.get("image_url")
     text = body.get("text")
 
     if image_url is None or text is None:
-        abort(400, "Bad : Request - image_url or text is missing")
+        abort(400, "Bad Request - image_url or text is missing")
 
     response = requests.get(image_url)
+    image_data = response.content
+    if len(image_data) > 4 * 1024 * 1024:
+        # Reduce the image size if it exceeds 4MB
+        image = Image.open(io.BytesIO(image_data))
+        image.thumbnail((1024, 1024))  # Resize the image to fit within the specified dimensions
+        image_data = io.BytesIO()
+        image.save(image_data, format="PNG")
+        image_data.seek(0)
     image = Image.open(io.BytesIO(response.content))
-    image_data = io.BytesIO()
+    with Image.open(BytesIO(image_data)) as img:
+        width, height = img.size
 
-    if len(image_data.read()) > 4*1024*1024:
-        raise ValueError("Image file size must be less than or equal to 4MB")
- 
 
-    get_mask = generate_mask(image_url)
-    # image_stream = io.BytesIO(get_mask)
-    # image = Image.open(image_stream)
-    # image.show()
-    # return
-    
+    available_sizes = ['256x256', '512x512', '1024x1024']
+    closest_size = min(available_sizes, key=lambda s: abs(width - int(s.split('x')[0])) + abs(height - int(s.split('x')[1])))
+    closest_width, closest_height = map(int, closest_size.split('x'))
+    get_mask = generate_mask(closest_width, closest_height)
 
-    current_image = response.content
+    if width != closest_width or height != closest_height:
+        # Resize the image to the closest available size
+        image = image.resize((closest_width, closest_height), Image.ANTIALIAS)
+        image_data = io.BytesIO()
+        image.save(image_data, format="PNG")
+        image_data.seek(0)
 
     edit_response = openai.Image.create_edit(
-    image=current_image,
-    mask=get_mask,
-    prompt=text,
-    n=1,
-    size="1024x1024",
-    response_format="url",)
+        image=image_data,
+        mask=get_mask,
+        prompt=text,
+        n=1,
+        size=f"{closest_width}x{closest_height}",  # Use the closest available size
+        response_format="url"
+    )
 
     updated_image_url = edit_response["data"][0]
     return jsonify(updated_image_url)
@@ -147,7 +152,3 @@ def image_editor(body):
 #         "response" : response
 #     }
 #     return jsonify(response)
-
-
-
-
