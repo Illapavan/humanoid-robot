@@ -82,6 +82,8 @@ def send_message(channel_type, channel_id, user_id, message):
 
 
 def stream_webhook(body):
+    print("Webhook received")
+    print(body)
     if body is None:
         return jsonify(success_response), 200
 
