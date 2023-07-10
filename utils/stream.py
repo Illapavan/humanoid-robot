@@ -54,7 +54,7 @@ def add_bot_to_channel(body):
     try:
         channel_object = server_client.query_channels({"cid": body.get("cid")}, limit=1)
         if channel_object is None or channel_object.get("channels") is None or len(channel_object.get("channels")) != 1 or \
-                len(channel_object.get("channels")[0].get("members")) != 0:
+                len(channel_object.get("channels")[0].get("members")) > 1:
             print("Invalid channel for adding bot")
             print(channel_object)
             return
