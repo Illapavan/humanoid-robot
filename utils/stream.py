@@ -89,30 +89,32 @@ def send_message(channel_type, channel_id, user_id, message):
 def message_handler(body):
     data = body.get("message").get("attachments")[0]
     data_type = data.get('data_type')
+    channel_type = body.get("channel_type")
+    channel_id = body.get("channel_id")
 
     try:
-        if body.get("user") is None or "client" not in body.get("user").get(id) or len(body.get("members")) == 0:
+        if body.get("user") is None or "client" not in body.get("user").get("id") or len(body.get("members")) == 0:
             return
 
-        bot_member_id = next((member for member in body.get("members") if "bot" in member.get(id)), None)
+        bot_member_id = next((member for member in body.get("members") if "bot" in member.get("user_id")), None)
         if bot_member_id is None:
             return
 
         if data_type == "chat":
             response = memory_conversational_chat(data)
-            send_message(body.get("channel_type"), body.get("channel_id"), bot_member_id, response.get("response"))
+            send_message(channel_type, channel_id, bot_member_id, response.get("response"))
         elif data_type == "pdf_reader":
             response = pdf_reader(data)
-            send_message(body.get("channel_type"), body.get("channel_id"), bot_member_id, response.get("response"))
+            send_message(channel_type, channel_id, bot_member_id, response.get("response"))
         elif data_type == "image_generator":
             response = image_generator(data)
-            send_message(body.get("channel_type"), body.get("channel_id"), bot_member_id, response.get("response"))
+            send_message(channel_type, channel_id, bot_member_id, response.get("response"))
         elif data_type == "image_variation":
             response = image_variation(data)
-            send_message(body.get("channel_type"), body.get("channel_id"), bot_member_id, response.get("response"))
+            send_message(channel_type, channel_id, bot_member_id, response.get("response"))
         elif data_type == 'image_editor':
             response = image_editor(data)
-            send_message(body.get("channel_type"), body.get("channel_id"), bot_member_id, response.get("response"))
+            send_message(channel_type, channel_id, bot_member_id, response.get("response"))
     except Exception as e:
         print("Exception caught while generating bot message to channel")
         print(e)
