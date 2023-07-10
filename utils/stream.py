@@ -52,17 +52,18 @@ def add_bot_to_channel(body):
         return
 
     try:
-        channelObject = server_client.query_channels({"cid": body.get("cid")}, limit=1)
-        if channelObject is None or channelObject.get("channels") is None or len(channelObject.get("channels")) != 1 or \
-                len(channelObject.get("channels")[0].get("members")) != 0:
+        channel_object = server_client.query_channels({"cid": body.get("cid")}, limit=1)
+        if channel_object is None or channel_object.get("channels") is None or len(channel_object.get("channels")) != 1 or \
+                len(channel_object.get("channels")[0].get("members")) != 0:
             print("Invalid channel for adding bot")
-            print(channelObject)
+            print(channel_object)
             return
 
-        bot_id = "bot" + str(uuid.uuid4())
+        bot_id = "bot-" + str(uuid.uuid4())
         server_client.upsert_user({
             "id": bot_id,
             "name": "Companion Bot #" + bot_id,
+            "role": "admin"
         })
         channel = server_client.channel(body.get("channel").get("type"), body.get("channel").get("id"))
         if channel is None:
@@ -88,7 +89,7 @@ def send_message(channel_type, channel_id, user_id, message):
 
 def message_handler(body):
     try:
-        if body.get("user") is None or "client" not in body.get("user").get("id") or len(body.get("members")) == 0:
+        if body.get("user") is None or "client-" not in body.get("user").get("id") or len(body.get("members")) == 0:
             return
 
         data = body.get("message").get("attachments")[0]
@@ -96,7 +97,7 @@ def message_handler(body):
         channel_type = body.get("channel_type")
         channel_id = body.get("channel_id")
 
-        bot_member_id = next((member for member in body.get("members") if "bot" in member.get("user_id")), None)
+        bot_member_id = next((member for member in body.get("members") if "bot-" in member.get("user_id")), None)
         if bot_member_id is None:
             return
 
