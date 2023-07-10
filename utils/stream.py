@@ -1,5 +1,6 @@
 import datetime
 import uuid
+import asyncio
 
 from stream_chat import StreamChat
 import os
@@ -59,8 +60,7 @@ def add_bot_to_channel(body):
             print(channelObject)
             return
 
-        bot_id = str(uuid.uuid4())
-        token = server_client.create_token(bot_id, exp=None, iat=datetime.datetime.utcnow()),
+        bot_id = "bot" + str(uuid.uuid4())
         server_client.upsert_user({
             "id": bot_id,
             "name": "Companion Bot #" + bot_id,
@@ -84,13 +84,43 @@ def send_message(channel_type, channel_id, user_id, message):
         channel.create(user_id)
         channel.send_message({"text": message}, user_id)
     except Exception as e:
-        print("Exception caught while sending bot message to channel to channel id - " + channel_id)
+        print("Exception caught while sending bot message to channel with id - " + channel_id)
         print(e)
 
+async def message_handler(body):
+    data = body.get("message").get("attachments")[0]
+    data_type = data.get('data_type')
 
-def stream_webhook():
+    try:
+        if body.get("user") is None or "client" not in body.get("user").get(id) or len(body.get("members")) == 0:
+            return
+
+        bot_member_id = next((member for member in body.get("members") if "bot" in member.get(id)), None)
+        if bot_member_id is None:
+            return
+
+        if data_type == "chat":
+            response = await memory_conversational_chat(data)
+            send_message(body.get("channel_type"), body.get("channel_id"), bot_member_id, response.get("response"))
+        elif data_type == "pdf_reader":
+            response = await pdf_reader(data)
+            send_message(body.get("channel_type"), body.get("channel_id"), bot_member_id, response.get("response"))
+        elif data_type == "image_generator":
+            response = await image_generator(data)
+            send_message(body.get("channel_type"), body.get("channel_id"), bot_member_id, response.get("response"))
+        elif data_type == "image_variation":
+            response = await image_variation(data)
+            send_message(body.get("channel_type"), body.get("channel_id"), bot_member_id, response.get("response"))
+        elif data_type == 'image_editor':
+            response = await image_editor(data)
+            send_message(body.get("channel_type"), body.get("channel_id"), bot_member_id, response.get("response"))
+    except Exception as e:
+        print("Exception caught while generating bot message to channel")
+        print(e)
+
+async def stream_webhook():
     print("Webhook received")
-    body = request.get_json()
+    body = await request.get_json()
     print(body)
     if body is None:
         return jsonify(success_response), 200
@@ -98,21 +128,6 @@ def stream_webhook():
     if body.get("type") == "channel.created":
         add_bot_to_channel(body)
     elif body.get("type") == "message.new":
-        data = body.get("message")
-        data_type = data.get("attachments")[0].get('data_type')
-
-        if data_type == "chat":
-            response = memory_conversational_chat(data.get("attachments")[0])
-            send_message(body.get("channel_type"), body.get("channel_id"), "bot1", response.get("response"))
-        # elif type == "new_session":
-        #
-        # elif type == "pdf_reader":
-        #     return pdf_reader(data)
-        # elif type == "image_generator":
-        #     return image_generator(data)
-        # elif type == "image_variation":
-        #     return image_variation(data)
-        # elif type == 'image_editor':
-        #     return image_editor(data)
+        message_handler(body)
 
     return jsonify(success_response), 200
