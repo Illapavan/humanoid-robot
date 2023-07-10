@@ -1,6 +1,5 @@
 import datetime
 import uuid
-import asyncio
 
 from stream_chat import StreamChat
 import os
@@ -87,7 +86,7 @@ def send_message(channel_type, channel_id, user_id, message):
         print("Exception caught while sending bot message to channel with id - " + channel_id)
         print(e)
 
-async def message_handler(body):
+def message_handler(body):
     data = body.get("message").get("attachments")[0]
     data_type = data.get('data_type')
 
@@ -100,27 +99,27 @@ async def message_handler(body):
             return
 
         if data_type == "chat":
-            response = await memory_conversational_chat(data)
+            response = memory_conversational_chat(data)
             send_message(body.get("channel_type"), body.get("channel_id"), bot_member_id, response.get("response"))
         elif data_type == "pdf_reader":
-            response = await pdf_reader(data)
+            response = pdf_reader(data)
             send_message(body.get("channel_type"), body.get("channel_id"), bot_member_id, response.get("response"))
         elif data_type == "image_generator":
-            response = await image_generator(data)
+            response = image_generator(data)
             send_message(body.get("channel_type"), body.get("channel_id"), bot_member_id, response.get("response"))
         elif data_type == "image_variation":
-            response = await image_variation(data)
+            response = image_variation(data)
             send_message(body.get("channel_type"), body.get("channel_id"), bot_member_id, response.get("response"))
         elif data_type == 'image_editor':
-            response = await image_editor(data)
+            response = image_editor(data)
             send_message(body.get("channel_type"), body.get("channel_id"), bot_member_id, response.get("response"))
     except Exception as e:
         print("Exception caught while generating bot message to channel")
         print(e)
 
-async def stream_webhook():
+def stream_webhook():
     print("Webhook received")
-    body = await request.get_json()
+    body = request.get_json()
     print(body)
     if body is None:
         return jsonify(success_response), 200
