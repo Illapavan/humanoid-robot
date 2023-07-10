@@ -87,14 +87,14 @@ def send_message(channel_type, channel_id, user_id, message):
         print(e)
 
 def message_handler(body):
-    data = body.get("message").get("attachments")[0]
-    data_type = data.get('data_type')
-    channel_type = body.get("channel_type")
-    channel_id = body.get("channel_id")
-
     try:
         if body.get("user") is None or "client" not in body.get("user").get("id") or len(body.get("members")) == 0:
             return
+
+        data = body.get("message").get("attachments")[0]
+        data_type = data.get("data_type")
+        channel_type = body.get("channel_type")
+        channel_id = body.get("channel_id")
 
         bot_member_id = next((member for member in body.get("members") if "bot" in member.get("user_id")), None)
         if bot_member_id is None:
@@ -116,7 +116,8 @@ def message_handler(body):
             response = image_editor(data)
             send_message(channel_type, channel_id, bot_member_id, response.get("response"))
     except Exception as e:
-        print("Exception caught while generating bot message to channel")
+        print("Exception caught while generating bot message to channel for body: ")
+        print(body)
         print(e)
 
 def stream_webhook():
