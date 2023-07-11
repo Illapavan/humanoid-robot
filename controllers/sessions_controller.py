@@ -1,13 +1,15 @@
 from flask import jsonify, request
 from utils.session_util import SessionManager
-
+from utils.stream import create_channel
 
 session_manager = SessionManager()
 
 def new_session():
     session_id = session_manager.create_session()
+    channel_id = create_channel(session_id)
     response_data = {
-        "session_id": session_id
+        "session_id": session_id,
+        "channel_id": channel_id
     }
 
     return jsonify(response_data)

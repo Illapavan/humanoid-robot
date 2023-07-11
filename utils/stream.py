@@ -5,7 +5,6 @@ from stream_chat import StreamChat
 import os
 from controllers.image_controller import image_generator, image_variation, image_editor
 from controllers.memory_chat_controller import memory_conversational_chat, pdf_reader
-from controllers.sessions_controller import new_session
 from flask import jsonify, request
 
 # instantiate your stream client using the API key and secret
@@ -15,6 +14,27 @@ success_response = {
     "success": "true"
 }
 
+def create_channel(uuid):
+    try:
+        if uuid is None:
+            return uuid
+
+        bot_id = "bot-" + str(uuid.uuid4())
+        server_client.upsert_user({
+            "id": bot_id,
+            "name": "Companion Bot #" + bot_id,
+            "role": "admin"
+        })
+        channel = server_client.channel("messaging", uuid)
+        if channel is None:
+            return
+        channel.create(bot_id)
+        print("Channel created - " + uuid)
+        return uuid
+    except Exception as e:
+        print("Exception caught while creating with id - " + uuid)
+        print(e)
+        return None
 
 def create_stream_token():
     data = request.get_json()
@@ -57,6 +77,10 @@ def add_bot_to_channel(body):
                 len(channel_object.get("channels")[0].get("members")) > 1:
             print("Invalid channel for adding bot")
             print(channel_object)
+            return
+
+        bot_member_id = next((member for member in channel_object.get("channels")[0].get("members") if "bot-" in member.get("user_id")), None)
+        if bot_member_id is not None:
             return
 
         bot_id = "bot-" + str(uuid.uuid4())
@@ -128,9 +152,10 @@ def stream_webhook():
     if body is None:
         return jsonify(success_response), 200
 
-    if body.get("type") == "channel.created":
-        add_bot_to_channel(body)
-    elif body.get("type") == "message.new":
+    # if body.get("type") == "channel.created":
+    #     add_bot_to_channel(body)
+    # el
+    if body.get("type") == "message.new":
         message_handler(body)
 
     return jsonify(success_response), 200
