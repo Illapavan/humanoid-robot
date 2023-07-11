@@ -107,7 +107,9 @@ def send_message(channel_type, channel_id, user_id, message):
         if channel is None:
             return
         channel.create(user_id)
-        channel.send_message({"text": message}, user_id)
+        channel.send_message({"text": "Hello"}, user_id)
+        print("Final comment")
+        print(message)
     except Exception as e:
         print("Exception caught while sending bot message to channel with id - " + channel_id)
         print(e)
@@ -131,8 +133,7 @@ def message_handler(body):
         print(bot_member_id)
         if data_type == "chat":
             response = memory_conversational_chat(data)
-            print("Final comment")
-            print(response)
+            print("Second Final comment")
             send_message(channel_type, channel_id, bot_member_id, response.get("response"))
         elif data_type == "pdf_reader":
             response = pdf_reader(data)
