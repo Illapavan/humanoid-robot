@@ -126,7 +126,7 @@ def message_handler(body):
         if bot_member is None:
             return
 
-        bot_member_id = bot_member.user_id
+        bot_member_id = bot_member.get("user_id")
         print("Bot Member id")
         print(bot_member_id)
         if data_type == "chat":
