@@ -81,7 +81,7 @@ def memory_conversational_chat(body):
         response_data = {
             "response": response,
         }
-
+        print("Success")
         return jsonify(response_data)
     except Exception as e:
         response = str(e)
@@ -90,11 +90,13 @@ def memory_conversational_chat(body):
             response_data = {
                 "response": response,
             }
+            print("LLM issue")
             return jsonify(response_data)
         else:
             error_response = {
                 "response": str(e),
             }
+            print("Generic issue")
             return jsonify(error_response), 500
 
 def pdf_reader(body):
