@@ -1,5 +1,6 @@
 import datetime
 import uuid
+import asyncio
 
 from stream_chat import StreamChat
 import os
@@ -148,7 +149,7 @@ def message_handler(body):
         print(body)
         print(e)
 
-def stream_webhook():
+async def stream_webhook():
     print("Webhook received")
     body = request.get_json()
     print(body)
