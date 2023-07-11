@@ -84,7 +84,7 @@ def memory_conversational_chat(body):
             "response": response,
         }
         print("Success")
-        return jsonify(response_data)
+        return response_data
     except Exception as e:
         response = str(e)
         if response.startswith("Could not parse LLM output: `"):
@@ -93,13 +93,13 @@ def memory_conversational_chat(body):
                 "response": response,
             }
             print("LLM issue")
-            return jsonify(response_data)
+            return response_data
         else:
             error_response = {
                 "response": str(e),
             }
             print("Generic issue")
-            return jsonify(error_response)
+            return error_response
 
 def pdf_reader(body):
 
