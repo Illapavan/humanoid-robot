@@ -14,9 +14,9 @@ success_response = {
     "success": "true"
 }
 
-def create_channel(channel_id):
+def create_channel(channel_id, user_id):
     try:
-        if channel_id is None:
+        if channel_id is None or user_id is None:
             return channel_id
 
         bot_id = "bot-" + str(uuid.uuid4())
@@ -29,7 +29,7 @@ def create_channel(channel_id):
         if channel is None:
             return
         channel.create(bot_id)
-        channel.add_members([bot_id], {"text": 'Companion has joined the channel.', "user_id": bot_id})
+        channel.add_members([bot_id, user_id], {"text": 'Companion has joined the channel.', "user_id": bot_id})
         print("Channel created - " + channel_id)
         return channel_id
     except Exception as e:

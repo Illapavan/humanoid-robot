@@ -5,8 +5,10 @@ from utils.stream import create_channel
 session_manager = SessionManager()
 
 def new_session():
+    data = request.get_json()
+    user_id = data.get("user_id")
     session_id = session_manager.create_session()
-    channel_id = create_channel(session_id)
+    channel_id = create_channel(session_id, user_id)
     response_data = {
         "session_id": session_id,
         "channel_id": channel_id
