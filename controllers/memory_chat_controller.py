@@ -64,7 +64,6 @@ def memory_conversational_chat(body):
         prefix = """Have a conversation with a human, answering the following questions as best you can. You have access to the following tools:"""
         suffix = """Begin!"
 
-        {chat_history}
         Question: {input}
         {agent_scratchpad}"""
 
@@ -72,16 +71,16 @@ def memory_conversational_chat(body):
             tools,
             prefix=prefix,
             suffix=suffix,
-            input_variables=["input", "chat_history", "agent_scratchpad"]
+            input_variables=["input", "agent_scratchpad"]
         )
         print("check 5")
 
-        memory = ConversationBufferMemory(memory_key="chat_history", chat_memory=message_history)
+        # memory = ConversationBufferMemory(memory_key="chat_history", chat_memory=message_history)
         print("check 6")
 
         llm_chain = LLMChain(llm=OpenAI(model_name = "gpt-4", temperature=0), prompt=prompt)
         agent = ZeroShotAgent(llm_chain=llm_chain, tools=tools, verbose=True)
-        agent_chain = AgentExecutor.from_agent_and_tools(agent=agent, tools=tools, verbose=True, memory=memory, handle_parsing_errors=True)
+        agent_chain = AgentExecutor.from_agent_and_tools(agent=agent, tools=tools, verbose=True, handle_parsing_errors=True)
         response = agent_chain.run(user_input)
 
         message_history.add_ai_message(str({"role": "bot", "content": response}))
