@@ -122,10 +122,11 @@ def message_handler(body):
         channel_type = body.get("channel_type")
         channel_id = body.get("channel_id")
 
-        bot_member_id = next((member for member in body.get("members") if "bot-" in member.get("user_id")), None)
-        if bot_member_id is None:
+        bot_member = next((member for member in body.get("members") if "bot-" in member.get("user_id")), None)
+        if bot_member is None:
             return
 
+        bot_member_id = bot_member.user_id
         print("Bot Member id")
         print(bot_member_id)
         if data_type == "chat":
