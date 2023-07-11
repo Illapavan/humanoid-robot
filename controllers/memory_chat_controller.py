@@ -28,7 +28,7 @@ search = SerpAPIWrapper()
 def memory_conversational_chat(body):
     session_id = request.headers.get("session-id") if request.headers.get("session-id") is not None else body.get('session_id')
     if session_id is None:
-        abort(400, "Bad Request: session-id header is missing")
+        return jsonify({"response": "Bad Request: session_id is missing"})
     try:
         message_history = session_manager.get_conversation_memory(session_id)
         print(message_history)
@@ -93,8 +93,7 @@ def memory_conversational_chat(body):
             return jsonify(response_data)
         else:
             error_response = {
-                "error": "Internal Server Error",
-                "message": str(e),
+                "response": str(e),
             }
             return jsonify(error_response), 500
 
@@ -145,20 +144,3 @@ def parse_s3_url(pdf_url):
     key = parsed_url.path.lstrip('/')
 
     return bucket, key
-
-def virtual_questioning():
-    data = request.get_json()
-    url = data.get("image-url")
-    question = data.get("question")
-
-    if url is None or question is None:
-        abort(400, "Bad : Request - image_url or text is missing")
-
-    image = Image.open(requests.get(url, stream=True).raw)
-    vqa_pipeline = pipeline("visual-question-answering")
-    responseData = vqa_pipeline(image, question, top_k=1)
-    response = responseData[0]['answer']
-    response = {
-        "response" : response
-    }
-    return jsonify(response)
