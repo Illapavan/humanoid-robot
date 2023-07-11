@@ -27,18 +27,22 @@ search = SerpAPIWrapper()
 
 def memory_conversational_chat(body):
     session_id = request.headers.get("session-id") if request.headers.get("session-id") is not None else body.get('session_id')
+    print(session_id)
     if session_id is None:
         return jsonify({"response": "Bad Request: session_id is missing"})
     try:
         message_history = session_manager.get_conversation_memory(session_id)
+        print("check 1")
         print(message_history)
         # body = request.get_json()
         user_input = body.get("message")
         print("User Request body")
         print(user_input)
+        print("check 2")
 
         message_history.add_user_message(str({"role": "user", "content": user_input}))
         db_chain = session_manager.getdb_connection()
+        print("check 3")
 
         tools = [
             Tool(
@@ -70,8 +74,10 @@ def memory_conversational_chat(body):
             suffix=suffix,
             input_variables=["input", "chat_history", "agent_scratchpad"]
         )
+        print("check 5")
 
         memory = ConversationBufferMemory(memory_key="chat_history", chat_memory=message_history)
+        print("check 6")
 
         llm_chain = LLMChain(llm=OpenAI(model_name = "gpt-4", temperature=0), prompt=prompt)
         agent = ZeroShotAgent(llm_chain=llm_chain, tools=tools, verbose=True)
@@ -79,6 +85,7 @@ def memory_conversational_chat(body):
         response = agent_chain.run(user_input)
 
         message_history.add_ai_message(str({"role": "bot", "content": response}))
+        print("check 9")
 
         response_data = {
             "response": response,
