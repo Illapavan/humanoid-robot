@@ -126,6 +126,8 @@ def message_handler(body):
         if bot_member_id is None:
             return
 
+        print("Bot Member id")
+        print(bot_member_id)
         if data_type == "chat":
             response = memory_conversational_chat(data)
             print("Final comment")
