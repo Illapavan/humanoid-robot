@@ -97,7 +97,7 @@ def memory_conversational_chat(body):
                 "response": str(e),
             }
             print("Generic issue")
-            return jsonify(error_response), 500
+            return jsonify(error_response)
 
 def pdf_reader(body):
 
