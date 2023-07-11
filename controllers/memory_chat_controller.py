@@ -34,6 +34,8 @@ def memory_conversational_chat(body):
         print(message_history)
         # body = request.get_json()
         user_input = body.get("message")
+        print("User Request body")
+        print(user_input)
 
         message_history.add_user_message(str({"role": "user", "content": user_input}))
         db_chain = session_manager.getdb_connection()
