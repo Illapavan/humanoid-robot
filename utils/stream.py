@@ -106,7 +106,7 @@ def send_message(channel_type, channel_id, user_id, message):
         channel = server_client.channel(channel_type, channel_id)
         if channel is None:
             return
-        channel.create()
+        channel.create(user_id)
         channel.send_message({"text": message}, user_id)
     except Exception as e:
         print("Exception caught while sending bot message to channel with id - " + channel_id)
