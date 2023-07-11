@@ -28,14 +28,12 @@ search = SerpAPIWrapper()
 def memory_conversational_chat(body):
     session_id = request.headers.get("session-id") if request.headers.get("session-id") is not None else body.get('session_id')
     if session_id is None:
-        return jsonify({"response": "Bad Request: session_id is missing"})
+        return {"response": "Bad Request: session_id is missing"}
     try:
         message_history = session_manager.get_conversation_memory(session_id)
         print(message_history)
         # body = request.get_json()
         user_input = body.get("message")
-        print("User Request body")
-        print(user_input)
 
         message_history.add_user_message(str({"role": "user", "content": user_input}))
         db_chain = session_manager.getdb_connection()
@@ -83,7 +81,6 @@ def memory_conversational_chat(body):
         response_data = {
             "response": response,
         }
-        print("Success")
         return response_data
     except Exception as e:
         response = str(e)
@@ -92,13 +89,11 @@ def memory_conversational_chat(body):
             response_data = {
                 "response": response,
             }
-            print("LLM issue")
             return response_data
         else:
             error_response = {
                 "response": str(e),
             }
-            print("Generic issue")
             return error_response
 
 def pdf_reader(body):
@@ -140,7 +135,7 @@ def pdf_reader(body):
             response_data = {
             "response": response,
             }
-            return jsonify(response_data)
+            return response_data
 
 def parse_s3_url(pdf_url):
     parsed_url = urlparse(pdf_url)

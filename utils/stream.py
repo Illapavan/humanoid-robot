@@ -13,6 +13,7 @@ server_client = StreamChat(api_key=os.environ.get('STREAM_API_KEY'), api_secret=
 success_response = {
     "success": "true"
 }
+admin_id = "support"
 
 def create_channel(channel_id, user_id):
     try:
@@ -29,7 +30,7 @@ def create_channel(channel_id, user_id):
         if channel is None:
             return
         channel.create(bot_id)
-        channel.add_members([bot_id, user_id], {"text": 'Companion has joined the channel.', "user_id": bot_id})
+        channel.add_members([bot_id, user_id, admin_id], {"text": 'Companion has joined the channel.', "user_id": bot_id})
         print("Channel created - " + channel_id)
         return channel_id
     except Exception as e:
@@ -107,9 +108,7 @@ def send_message(channel_type, channel_id, user_id, message):
         if channel is None:
             return
         channel.create(user_id)
-        channel.send_message({"text": "Hello"}, user_id)
-        print("Final comment")
-        print(message)
+        channel.send_message({"text": message}, user_id)
     except Exception as e:
         print("Exception caught while sending bot message to channel with id - " + channel_id)
         print(e)
@@ -129,13 +128,8 @@ def message_handler(body):
             return
 
         bot_member_id = bot_member.get("user_id")
-        print("Bot Member id")
-        print(bot_member_id)
         if data_type == "chat":
             response = memory_conversational_chat(data)
-            print("Second Final comment")
-            print(response)
-            print(response["response"])
             send_message(channel_type, channel_id, bot_member_id, response.get("response"))
         elif data_type == "pdf_reader":
             response = pdf_reader(data)
@@ -161,9 +155,6 @@ def stream_webhook():
     if body is None:
         return jsonify(success_response), 200
 
-    # if body.get("type") == "channel.created":
-    #     add_bot_to_channel(body)
-    # el
     if body.get("type") == "message.new":
         message_handler(body)
 
