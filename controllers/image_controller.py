@@ -20,17 +20,16 @@ def image_generator(body):
     # body = request.get_json()
     text_prompt = body.get("text_prompt")
     if text_prompt is None:
-        abort(400, "Bad Request: Input can't be empty")   
+        return jsonify({"response": "Bad Request: text_prompt can't be empty"}) 
 
     try: 
         generated_image = generate_dalle2_image(text_prompt)
         response = {
-            "generated_image": generated_image
+            "response": generated_image
         }
-
         return jsonify(response)
     except Exception as e:
-        abort(500, f"Internal Server Error: Failed to generate image ({str(e)})")    
+        return jsonify({"response:": f"Internal Server Error: Failed to generate image ({str(e)})"}) 
 
 
 def image_variation(body):
@@ -38,13 +37,13 @@ def image_variation(body):
         # body = request.get_json()
         image_url = body.get("image_url")
         if image_url is None:
-            abort(400, "Bad Request: Input can't be empty")
+            return jsonify({"response": "Bad Request: image_url can't be empty"})
 
         try:
             image_response = requests.get(image_url)
             image_response.raise_for_status()
         except requests.exceptions.RequestException as e:
-            abort(400, f"Bad Request: Failed to fetch the image ({str(e)})")
+            return jsonify({"response": f"Bad Request: Failed to fetch the image ({str(e)})"})
 
         image_content = image_response.content
         try:
@@ -67,13 +66,13 @@ def image_variation(body):
                     response_format="url"
                 )
                 updated_image_url = variation_response["data"][0]
-                return jsonify(updated_image_url)
+                return jsonify({"response": updated_image_url})
             except openai.Error as e:
-                abort(500, f"Internal Server Error: Failed to process image variation ({str(e)})")
+                return jsonify({"response": f"Internal Server Error: Failed to process image variation ({str(e)})"})
         except IOError as e:
-            abort(400, f"Bad Request: Failed to open or process the image ({str(e)})")
+            return jsonify({"response": f"Bad Request: Failed to open or process the image ({str(e)})"})
     except Exception as e:
-        abort(500, f"Internal Server Error: {str(e)}")
+        return jsonify({"response": f"Internal Server Error: {str(e)}"})
     
 
 def generate_mask(width, height):
@@ -95,7 +94,7 @@ def image_editor(body):
     text = body.get("text")
 
     if image_url is None or text is None:
-        abort(400, "Bad Request - image_url or text is missing")
+        return jsonify({"response": "Bad Request: image_url or image_url can't be empty"})
 
     response = requests.get(image_url)
     image_data = response.content
