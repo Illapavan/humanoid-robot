@@ -135,6 +135,7 @@ def message_handler(body):
             response = memory_conversational_chat(data)
             print("Second Final comment")
             print(response)
+            print(response.response)
             send_message(channel_type, channel_id, bot_member_id, response.get("response"))
         elif data_type == "pdf_reader":
             response = pdf_reader(data)
