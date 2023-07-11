@@ -29,6 +29,7 @@ def create_channel(channel_id):
         if channel is None:
             return
         channel.create(bot_id)
+        channel.add_members([bot_id], {"text": 'Companion has joined the channel.', "user_id": bot_id})
         print("Channel created - " + channel_id)
         return channel_id
     except Exception as e:
