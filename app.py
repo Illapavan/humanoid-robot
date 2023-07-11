@@ -5,7 +5,7 @@ from controllers.sessions_controller import new_session
 from controllers.image_controller import image_generator, image_variation, image_editor
 from controllers.upload_controller import upload_file
 from utils.stream import create_stream_token, revoke_stream_token, stream_webhook
-from controllers.calendar_controller import getCalendarEvents
+from controllers.calendar_controller import queryOnCalendar, createCalendarevent, getCalendarSlots
 
 
 app = Flask(__name__)
@@ -23,8 +23,9 @@ app.route('/api/v1/upload', methods=["POST"])(upload_file)
 app.route('/api/v1/user/token', methods=["POST"])(create_stream_token)
 app.route('/api/v1/user/token/delete', methods=["POST"])(revoke_stream_token)
 app.route('/api/v1/webhook', methods=["POST"])(stream_webhook)
-app.route('/api/v1/getCalendarEvents', methods=["GET"])(getCalendarEvents)
-
+app.route('/api/v1/queryOnCalendarEvents', methods=["POST"])(queryOnCalendar)
+app.route('/api/v1/createCalendarEvent', methods=['POST'])(createCalendarevent)
+app.route('/api/v1/getCalendarSlots', methods=["POST"])(getCalendarSlots)
 
 @app.route('/api/v1/assistant', methods = ["POST"])
 def handle_assistant():
