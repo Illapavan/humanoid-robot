@@ -26,10 +26,10 @@ session_manager = SessionManager()
 search = SerpAPIWrapper()
 
 def memory_conversational_chat(body):
-    session_id = request.headers.get("session-id")
+    session_id = request.headers.get("session-id") if request.headers.get("session-id") is not None else body.get('session_id')
     if session_id is None:
         abort(400, "Bad Request: session-id header is missing")
-    try:    
+    try:
         message_history = session_manager.get_conversation_memory(session_id)
         print(message_history)
         # body = request.get_json()
@@ -112,7 +112,7 @@ def pdf_reader(body):
         text = ""
         for page in pdf_reader.pages:
             text += page.extract_text()
-            
+
         # split into chunks
         text_splitter = CharacterTextSplitter(
             separator="\n",
@@ -121,16 +121,16 @@ def pdf_reader(body):
             length_function=len
         )
         chunks = text_splitter.split_text(text)
-        
+
         # create embeddings
         embeddings = OpenAIEmbeddings()
         knowledge_base = FAISS.from_texts(chunks, embeddings)
-        
+
         # show user input
         user_question = body.get("question")
         if user_question:
             docs = knowledge_base.similarity_search(user_question)
-            
+
             llm = OpenAI()
             chain = load_qa_chain(llm, chain_type="stuff")
             response = chain.run(input_documents=docs, question=user_question)
