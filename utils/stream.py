@@ -14,10 +14,10 @@ success_response = {
     "success": "true"
 }
 
-def create_channel(uuid):
+def create_channel(channel_id):
     try:
-        if uuid is None:
-            return uuid
+        if channel_id is None:
+            return channel_id
 
         bot_id = "bot-" + str(uuid.uuid4())
         server_client.upsert_user({
@@ -25,14 +25,14 @@ def create_channel(uuid):
             "name": "Companion Bot #" + bot_id,
             "role": "admin"
         })
-        channel = server_client.channel("messaging", uuid)
+        channel = server_client.channel("messaging", channel_id)
         if channel is None:
             return
         channel.create(bot_id)
-        print("Channel created - " + uuid)
-        return uuid
+        print("Channel created - " + channel_id)
+        return channel_id
     except Exception as e:
-        print("Exception caught while creating with id - " + uuid)
+        print("Exception caught while creating with id - " + channel_id)
         print(e)
         return None
 
