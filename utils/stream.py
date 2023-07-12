@@ -161,6 +161,8 @@ def stream_webhook():
         return jsonify(success_response), 200
 
     if body.get("type") == "message.new":
-        message_handler(body)
+        #In Python, a single-item tuple must include a comma to differentiate it from a regular parentheses grouping. Without the comma, (body) would be interpreted as simply body, not as a tuple
+        thread = threading.Thread(target=message_handler, args=(body,))
+        thread.start()
 
     return jsonify(success_response), 200
