@@ -128,7 +128,6 @@ def image_editor(body):
     )
 
     updated_image_url = edit_response["data"][0]
-    print("--the image data is --", updated_image_url)
     return updated_image_url
 
 
