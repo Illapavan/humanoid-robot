@@ -40,24 +40,24 @@ def memory_conversational_chat(body):
 
         tools = [
             Tool(
-                name="Current Search",
+                name="Google Search Engine",
                 func=search.run,
-                description="useful for when you need to answer questions about current events or the current state of the world"
+                description="Enhance your search capabilities with the power of Google Search! If you ever find yourself unable to locate the desired information using this search tool, fear not. Simply request the assistance of our specialized Property search engine, tailored specifically for real estate-related queries. With this combination of tools at your disposal, you can confidently explore a wide range of topics, from general information to intricate property details. Let the comprehensive knowledge of Google Search be your guide, and should you encounter any obstacles, harness the specialized expertise of our Property search engine to uncover those elusive real estate answers"
             ),
             Tool(
                 name = "Agents Database",
                 func = db_chain.run,
-                description = "useful to fetch the agents info and their about information"
+                description = "Introducing the powerful signup_and_login_table tool, specifically designed to provide seamless access to Radius Real Estate data! By utilizing this internal table, you can effortlessly retrieve essential information related to sign-ups and logins. Whether you're looking for user details, authentication data, or any other relevant information, the signup_and_login_table is at your service. Simply query the table, and it will furnish you with the necessary data points. Should you encounter any difficulties finding the specific details you seek, don't hesitate to rely on this dedicated tool for a comprehensive view of the Radius Real Estate signup and login data. Discover insights, streamline processes, and make informed decisions effortlessly with the signup_and_login_table"
             ),
             Tool(
                 name = "Event rooms",
                 func = db_chain.run,
-                description = "useful to fetch the scheduled rooms information"
+                description = "Unlock the potential of room management with our exclusive tool, Radius Rooms! Need to find information about available rooms and their scheduled times? Look no further. Simply enter your query, and Radius Rooms will provide you with a concise list of room names and their respective scheduled times. Discover the perfect space for your meetings, events, or gatherings with ease. Should you encounter any challenges in finding the desired room information, don't hesitate to turn to this powerful internal tool for accurate and up-to-date data. Let Radius Rooms streamline your room search process, ensuring you find the right space at the right time"
             ),
             Tool(
                 name = "Property Data",
                 func = db_chain.run,
-                description= "A Property search engine. Use this more than the normal search if the question is about Realestate, like 'who is the property details?', when it fails to get answer from this search engine. If you colund't find the answer using this tool use the current search"
+                description= "Introducing a specialized Property search engine! Whenever you have queries related to real estate, such as who owns a specific property? or what are the details of a particular property?, rely on this dedicated search engine for accurate information. In the event that it doesn't provide the desired answer, feel free to switch to a regular search engine. This way, you can maximize your chances of finding the information you seek, whether it's property-related or otherwise"
             )
         ]
         prefix = """Radius Agent Bot, powered by AI, is here to assist you on behalf of the Radius Support Team. Radius Agent is an online real estate brokerage focused on helping agents succeed. Agents keep 100% of their commissions while getting 100% support from the Radius team. Agents can use our tools even if they're with another brokerage. If I don't have the answer you're looking for, don't worry! I'm constantly learning and can be trained to improve. I strive to do better with each conversation. Please feel free to ask any questions, and I will provide you with the best answers using the following tools:"""
