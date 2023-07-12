@@ -114,7 +114,7 @@ def send_message(channel_type, channel_id, user_id, message):
         print("Exception caught while sending bot message to channel with id - " + channel_id)
         print(e)
 
-def message_handler(body):
+async def message_handler(body):
     try:
         if body.get("user") is None or "client-" not in body.get("user").get("id") or len(body.get("members")) == 0:
             return
@@ -151,12 +151,12 @@ def message_handler(body):
 
 async def stream_webhook():
     print("Webhook received")
-    body = await request.get_json()
+    body = request.get_json()
     print(body)
     if body is None:
         return jsonify(success_response), 200
 
     if body.get("type") == "message.new":
-        message_handler(body)
+        await message_handler(body)
 
     return jsonify(success_response), 200
