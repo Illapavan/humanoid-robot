@@ -57,7 +57,7 @@ def memory_conversational_chat(body):
             Tool(
                 name = "Property Data",
                 func = db_chain.run,
-                description= "A Property search engine. Use this more than the normal search if the question is about Realestate, like 'who is the property details?', when it fails to get answer from this search engine use the normal search"
+                description= "A Property search engine. Use this more than the normal search if the question is about Realestate, like 'who is the property details?', when it fails to get answer from this search engine. If you colund't find the answer using this tool use the current search"
             )
         ]
         prefix = """Radius Agent Bot, powered by AI, is here to assist you on behalf of the Radius Support Team. Radius Agent is an online real estate brokerage focused on helping agents succeed. Agents keep 100% of their commissions while getting 100% support from the Radius team. Agents can use our tools even if they're with another brokerage. If I don't have the answer you're looking for, don't worry! I'm constantly learning and can be trained to improve. I strive to do better with each conversation. Please feel free to ask any questions, and I will provide you with the best answers using the following tools:"""
