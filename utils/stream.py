@@ -114,7 +114,7 @@ def send_message(channel_type, channel_id, user_id, message):
         print("Exception caught while sending bot message to channel with id - " + channel_id)
         print(e)
 
-async def message_handler(body):
+def message_handler(body):
     try:
         if body.get("user") is None or "client-" not in body.get("user").get("id") or len(body.get("members")) == 0:
             print("Invalid user for bot response")
@@ -153,7 +153,7 @@ async def message_handler(body):
         print(e)
         return True
 
-async def stream_webhook():
+def stream_webhook():
     print("Webhook received")
     body = request.get_json()
     print(body)
