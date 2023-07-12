@@ -11,3 +11,6 @@ PyPDF2
 tiktoken
 faiss-cpu
 stream-chat
+llama-index==0.6.14
+google-api-python-client
+chromadb
