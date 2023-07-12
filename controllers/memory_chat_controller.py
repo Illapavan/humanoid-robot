@@ -53,6 +53,11 @@ def memory_conversational_chat(body):
                 name = "Event rooms",
                 func = db_chain.run,
                 description = "useful to fetch the scheduled rooms information"
+            ),
+            Tool(
+                name = "Property Data",
+                func = db_chain.run,
+                description= "A Property search engine. Use this more than the normal search if the question is about Realestate, like 'who is the property details?', when it fails to get answer from this search engine use the normal search"
             )
         ]
         prefix = """Have a conversation with a human, answering the following questions as best you can. You have access to the following tools:"""
