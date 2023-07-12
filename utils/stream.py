@@ -134,18 +134,23 @@ def message_handler(body):
         bot_member_id = bot_member.get("user_id")
         if data_type == "chat":
             response = memory_conversational_chat(data)
+            print("-- The response from bot is -- ", response)
             send_message(channel_type, channel_id, bot_member_id, response.get("response"))
         elif data_type == "pdf_reader":
             response = pdf_reader(data)
+            print("-- The response from bot is -- ", response)
             send_message(channel_type, channel_id, bot_member_id, response.get("response"))
         elif data_type == "image_generator":
             response = image_generator(data)
+            print("-- The response from bot is -- ", response)
             send_message(channel_type, channel_id, bot_member_id, response.get("url"))
         elif data_type == "image_variation":
             response = image_variation(data)
+            print("-- The response from bot is -- ", response)
             send_message(channel_type, channel_id, bot_member_id, response.get("response"))
         elif data_type == 'image_editor':
             response = image_editor(data)
+            print("-- The response from bot is -- ", response)
             send_message(channel_type, channel_id, bot_member_id, response.get("url"))
         elif data_type == 'create_calendar_event':
             response = createCalendarevent(data)
