@@ -114,7 +114,7 @@ def send_message(channel_type, channel_id, user_id, message):
         print("Exception caught while sending bot message to channel with id - " + channel_id)
         print(e)
 
-def message_handler(body):
+async def message_handler(body):
     try:
         if body.get("user") is None or "client-" not in body.get("user").get("id") or len(body.get("members")) == 0:
             print("Invalid user for bot response")
@@ -161,9 +161,6 @@ async def stream_webhook():
         return jsonify(success_response), 200
 
     if body.get("type") == "message.new":
-        if asyncio.get_event_loop().is_closed():
-            asyncio.set_event_loop(asyncio.new_event_loop())
-        loop = asyncio.get_event_loop()
-        loop.run_in_executor(None, message_handler, body)
+        asyncio.run(message_handler(body))
 
     return jsonify(success_response), 200
