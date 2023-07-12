@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from controllers.memory_chat_controller import memory_conversational_chat, pdf_reader
-from controllers.sessions_controller import new_session
+from controllers.sessions_controller import new_session, flush
 from controllers.image_controller import image_generator, image_variation, image_editor
 from controllers.upload_controller import upload_file
 from utils.stream import create_stream_token, revoke_stream_token, stream_webhook
@@ -26,6 +26,7 @@ app.route('/api/v1/webhook', methods=["POST"])(stream_webhook)
 app.route('/api/v1/queryOnCalendarEvents', methods=["POST"])(queryOnCalendar)
 app.route('/api/v1/createCalendarEvent', methods=['POST'])(createCalendarevent)
 app.route('/api/v1/getCalendarSlots', methods=["POST"])(getCalendarSlots)
+app.route('/api/v1/flush', methods=["GET"])(flush)
 
 @app.route('/api/v1/assistant', methods = ["POST"])
 def handle_assistant():

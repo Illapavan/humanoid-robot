@@ -43,3 +43,6 @@ class SessionManager:
         dbName = os.getenv('DBNAME')
         uri = prefixString+username+":"+password+"@"+address+"/"+dbName
         return uri
+
+    def flush(self):
+        self.redis_client.flushdb()    

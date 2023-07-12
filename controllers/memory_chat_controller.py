@@ -63,6 +63,7 @@ def memory_conversational_chat(body):
         prefix = """Radius Agent Bot, powered by AI, is here to assist you on behalf of the Radius Support Team. Radius Agent is an online real estate brokerage focused on helping agents succeed. Agents keep 100% of their commissions while getting 100% support from the Radius team. Agents can use our tools even if they're with another brokerage. If I don't have the answer you're looking for, don't worry! I'm constantly learning and can be trained to improve. I strive to do better with each conversation. Please feel free to ask any questions, and I will provide you with the best answers using the following tools:"""
         suffix = """Begin!"
 
+        {chat_history}
         Question: {input}
         {agent_scratchpad}"""
 
@@ -70,14 +71,14 @@ def memory_conversational_chat(body):
             tools,
             prefix=prefix,
             suffix=suffix,
-            input_variables=["input", "agent_scratchpad"]
+            input_variables=["input", "chat_history", "agent_scratchpad"]
         )
 
-        # memory = ConversationBufferMemory(memory_key="chat_history", chat_memory=message_history)
+        memory = ConversationBufferMemory(memory_key="chat_history", chat_memory=message_history)
 
         llm_chain = LLMChain(llm=OpenAI(model_name = "gpt-4", temperature=0), prompt=prompt)
         agent = ZeroShotAgent(llm_chain=llm_chain, tools=tools, verbose=True)
-        agent_chain = AgentExecutor.from_agent_and_tools(agent=agent, tools=tools, verbose=True, handle_parsing_errors=True)
+        agent_chain = AgentExecutor.from_agent_and_tools(agent=agent, tools=tools, verbose=True, memory = memory, handle_parsing_errors=True)
         response = agent_chain.run(user_input)
 
         message_history.add_ai_message(str({"role": "bot", "content": response}))

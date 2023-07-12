@@ -28,3 +28,11 @@ def get_chat_session():
 
     return jsonify(info)
 
+def flush():
+    session_manager.flush()
+    print("flushing completed")
+    response = {
+        "response" : "success"
+    }  
+    return jsonify(response)
+
