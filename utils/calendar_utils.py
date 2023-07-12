@@ -143,11 +143,14 @@ class GoogleCalendarReader(BaseReader):
                     "end" : self.convertISO8601ToTimestamp(slot['end']),
                 }
             )
-        return slots    
+        response = {
+            "slots": slots
+        }    
+        return response    
 
 
 
-    def createCalendarEvent(self):
+    def createCalendarEvent(self, data):
         credentials = self._get_credentials()
         service = build("calendar", "v3", credentials=credentials)
         data = request.get_json()

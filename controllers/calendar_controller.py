@@ -14,12 +14,9 @@ from flask import jsonify, request
 load_dotenv()
 loader = GoogleCalendarReader()
 
-def queryOnCalendar():
-    data = request.get_json()
-
+def queryOnCalendar(data):
     documents = loader.load_data(start_date=date.today(), number_of_results=50)
     formatted_documents: List[LCDocument] = [doc.to_langchain_format() for doc in documents]
-    print(formatted_documents)
     text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
     documents = text_splitter.split_documents(formatted_documents)
     embeddings = OpenAIEmbeddings()
@@ -34,18 +31,17 @@ def queryOnCalendar():
     response_data = {
         "response" : answer
     }
-    return jsonify(response_data)
+    return response_data
 
-def getCalendarData():
-    loader = GoogleCalendarReader()
-    documents = loader.load_data(start_date=date.today(), number_of_results=50)
+# def getCalendarData():
+#     loader = GoogleCalendarReader()
+#     documents = loader.load_data(start_date=date.today(), number_of_results=50)
 
-def createCalendarevent():
-    response = loader.createCalendarEvent()
+def createCalendarevent(data):
+    response = loader.createCalendarEvent(data)
     return response
 
-def getCalendarSlots():
-    data = request.get_json()
+def getCalendarSlots(data):
     duration = data.get('duration')
     response = loader.getCalendarSlots(duration)
     return response    
