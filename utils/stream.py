@@ -1,6 +1,6 @@
 import datetime
 import uuid
-from _thread import start_new_thread
+import asyncio
 
 from stream_chat import StreamChat
 import os
@@ -117,7 +117,8 @@ def send_message(channel_type, channel_id, user_id, message):
 def message_handler(body):
     try:
         if body.get("user") is None or "client-" not in body.get("user").get("id") or len(body.get("members")) == 0:
-            return
+            print("Invalid user for bot response")
+            return True
 
         data = body.get("message").get("attachments")[0]
         data_type = data.get("data_type")
@@ -126,7 +127,8 @@ def message_handler(body):
 
         bot_member = next((member for member in body.get("members") if "bot-" in member.get("user_id")), None)
         if bot_member is None:
-            return
+            print("Bot is missing as a member")
+            return True
 
         bot_member_id = bot_member.get("user_id")
         if data_type == "chat":
@@ -144,12 +146,14 @@ def message_handler(body):
         elif data_type == 'image_editor':
             response = image_editor(data)
             send_message(channel_type, channel_id, bot_member_id, response.get("response"))
+        return True
     except Exception as e:
         print("Exception caught while generating bot message to channel for body: ")
         print(body)
         print(e)
+        return True
 
-def stream_webhook():
+async def stream_webhook():
     print("Webhook received")
     body = request.get_json()
     print(body)
@@ -157,7 +161,7 @@ def stream_webhook():
         return jsonify(success_response), 200
 
     if body.get("type") == "message.new":
-        arg = (False, )
-        start_new_thread(message_handler(body), arg)
+        loop = asyncio.get_event_loop()
+        loop.run_in_executor(None, message_handler, body)
 
     return jsonify(success_response), 200
