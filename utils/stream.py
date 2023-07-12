@@ -140,7 +140,7 @@ def message_handler(body):
             send_message(channel_type, channel_id, bot_member_id, response.get("response"))
         elif data_type == "image_generator":
             response = image_generator(data)
-            send_message(channel_type, channel_id, bot_member_id, response.get("response"))
+            send_message(channel_type, channel_id, bot_member_id, response.get("url"))
         elif data_type == "image_variation":
             response = image_variation(data)
             send_message(channel_type, channel_id, bot_member_id, response.get("response"))

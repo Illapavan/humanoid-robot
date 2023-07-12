@@ -13,7 +13,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def generate_dalle2_image(text_prompt):
     response = openai.Image.create(prompt=text_prompt, n=1, size="1024x1024")
-    return response["data"]
+    return response["data"][0]
 
 
 def image_generator(body):
@@ -24,10 +24,7 @@ def image_generator(body):
 
     try:
         generated_image = generate_dalle2_image(text_prompt)
-        response = {
-            "response": generated_image
-        }
-        return response
+        return generated_image
     except Exception as e:
         return {"response:": f"Internal Server Error: Failed to generate image ({str(e)})"}
 
