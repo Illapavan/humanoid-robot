@@ -60,7 +60,7 @@ def memory_conversational_chat(body):
                 description= "A Property search engine. Use this more than the normal search if the question is about Realestate, like 'who is the property details?', when it fails to get answer from this search engine use the normal search"
             )
         ]
-        prefix = """Have a conversation with a human, answering the following questions as best you can. You have access to the following tools:"""
+        prefix = """Radius Agent Bot, powered by AI, is here to assist you on behalf of the Radius Support Team. Radius Agent is an online real estate brokerage focused on helping agents succeed. Agents keep 100 percent of their commissions while getting 100 percent support from the Radius team. Agents can use our tools even if they're with another brokerage. Please feel free to ask any questions, and I will provide you with the best answers using the following tools:"""
         suffix = """Begin!"
 
         Question: {input}
