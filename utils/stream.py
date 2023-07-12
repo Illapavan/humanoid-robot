@@ -1,6 +1,6 @@
 import datetime
 import uuid
-import asyncio
+from _thread import start_new_thread
 
 from stream_chat import StreamChat
 import os
@@ -114,7 +114,7 @@ def send_message(channel_type, channel_id, user_id, message):
         print("Exception caught while sending bot message to channel with id - " + channel_id)
         print(e)
 
-async def message_handler(body):
+def message_handler(body):
     try:
         if body.get("user") is None or "client-" not in body.get("user").get("id") or len(body.get("members")) == 0:
             return
@@ -149,7 +149,7 @@ async def message_handler(body):
         print(body)
         print(e)
 
-async def stream_webhook():
+def stream_webhook():
     print("Webhook received")
     body = request.get_json()
     print(body)
@@ -157,6 +157,7 @@ async def stream_webhook():
         return jsonify(success_response), 200
 
     if body.get("type") == "message.new":
-        await message_handler(body)
+        arg = False
+        start_new_thread(message_handler(body))
 
     return jsonify(success_response), 200
