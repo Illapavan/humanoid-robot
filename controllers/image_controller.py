@@ -58,7 +58,7 @@ def image_variation(body):
             try:
                 variation_response = openai.Image.create_variation(
                     image=image_content_resized,
-                    n=2,
+                    n=1,
                     size="1024x1024",
                     response_format="url"
                 )

@@ -147,7 +147,7 @@ def message_handler(body):
         elif data_type == "image_variation":
             response = image_variation(data)
             print("-- The response from bot is -- ", response)
-            send_message(channel_type, channel_id, bot_member_id, response.get("response"))
+            send_message(channel_type, channel_id, bot_member_id, response.get("url"))
         elif data_type == 'image_editor':
             response = image_editor(data)
             print("-- The response from bot is -- ", response)
