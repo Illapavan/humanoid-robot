@@ -146,6 +146,7 @@ def message_handler(body):
             send_message(channel_type, channel_id, bot_member_id, response.get("response"))
         elif data_type == 'image_editor':
             response = image_editor(data)
+            print(response)
             send_message(channel_type, channel_id, bot_member_id, response.get("response"))
         elif data_type == 'create_calendar_event':
             response = createCalendarevent(data)
