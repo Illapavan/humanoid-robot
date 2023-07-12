@@ -151,7 +151,7 @@ def message_handler(body):
 
 async def stream_webhook():
     print("Webhook received")
-    body = request.get_json()
+    body = await request.get_json()
     print(body)
     if body is None:
         return jsonify(success_response), 200
