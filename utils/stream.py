@@ -161,6 +161,8 @@ async def stream_webhook():
         return jsonify(success_response), 200
 
     if body.get("type") == "message.new":
+        if asyncio.get_event_loop().is_closed():
+            asyncio.set_event_loop(asyncio.new_event_loop())
         loop = asyncio.get_event_loop()
         loop.run_in_executor(None, message_handler, body)
 
