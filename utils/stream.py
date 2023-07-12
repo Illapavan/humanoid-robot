@@ -5,6 +5,7 @@ from stream_chat import StreamChat
 import os
 from controllers.image_controller import image_generator, image_variation, image_editor
 from controllers.memory_chat_controller import memory_conversational_chat, pdf_reader
+from controllers.calendar_controller import getCalendarSlots, createCalendarevent, getCalendarData
 from flask import jsonify, request
 
 # instantiate your stream client using the API key and secret
@@ -140,6 +141,15 @@ def message_handler(body):
             send_message(channel_type, channel_id, bot_member_id, response.get("response"))
         elif data_type == 'image_editor':
             response = image_editor(data)
+            send_message(channel_type, channel_id, bot_member_id, response.get("response"))
+        elif data_type == 'create_calendar_event':
+            response = createCalendarevent(data)
+            send_message(channel_type, channel_id, bot_member_id, response.get("response"))
+        elif data_type == 'get_calendar_slots':
+            response = getCalendarSlots(data)
+            send_message(channel_type, channel_id, bot_member_id, response.get("response"))
+        elif data_type == 'query_on_calendar':
+            response = getCalendarData(data)
             send_message(channel_type, channel_id, bot_member_id, response.get("response"))
     except Exception as e:
         print("Exception caught while generating bot message to channel for body: ")
