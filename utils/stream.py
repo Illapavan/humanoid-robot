@@ -1,6 +1,6 @@
 import datetime
 import uuid
-import asyncio
+import threading
 
 from stream_chat import StreamChat
 import os
@@ -161,6 +161,7 @@ async def stream_webhook():
         return jsonify(success_response), 200
 
     if body.get("type") == "message.new":
-        asyncio.run(message_handler(body))
+        handler_thread = threading.Thread(target=message_handler, args=body)
+        handler_thread.start()
 
     return jsonify(success_response), 200
