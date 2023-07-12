@@ -1,6 +1,6 @@
 import datetime
 import uuid
-import threading
+from multiprocessing import Process
 
 from stream_chat import StreamChat
 import os
@@ -161,6 +161,6 @@ def stream_webhook():
         return jsonify(success_response), 200
 
     if body.get("type") == "message.new":
-        message_handler(body)
+        Process(target=message_handler, args=(body,)).start()
 
     return jsonify(success_response), 200
