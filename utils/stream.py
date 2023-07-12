@@ -157,7 +157,7 @@ def stream_webhook():
         return jsonify(success_response), 200
 
     if body.get("type") == "message.new":
-        arg = False
-        start_new_thread(message_handler(body))
+        arg = (False, )
+        start_new_thread(message_handler(body), arg)
 
     return jsonify(success_response), 200
