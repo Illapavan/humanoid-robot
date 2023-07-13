@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from controllers.memory_chat_controller import memory_conversational_chat, pdf_reader
 from controllers.sessions_controller import new_session, flush
@@ -46,6 +46,11 @@ def handle_assistant():
     elif type == 'image_editor':
         return image_editor(data)
     return jsonify({"message": "Invalid request type."})
+
+@app.route('/.well-known/pki-validation/F9324EF74D7B474B4289563768901F62.txt', methods = ["GET"])
+def httpAuthenticate():
+    return send_from_directory('static', "F9324EF74D7B474B4289563768901F62.txt")
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
