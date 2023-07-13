@@ -47,17 +47,17 @@ def memory_conversational_chat(body):
             Tool(
                 name = "Agents Database",
                 func = db_chain.run,
-                description = "Introducing the powerful signup_and_login_table tool, specifically designed to provide seamless access to Radius Real Estate data! By utilizing this internal table, you can effortlessly retrieve essential information related to sign-ups and logins. Whether you're looking for user details, authentication data, or any other relevant information, the signup_and_login_table is at your service. Simply query the table, and it will furnish you with the necessary data points. Should you encounter any difficulties finding the specific details you seek, don't hesitate to rely on this dedicated tool for a comprehensive view of the Radius Real Estate signup and login data. Discover insights, streamline processes, and make informed decisions effortlessly with the signup_and_login_table"
+                description = "Introducing the powerful signup_and_login_table tool, specifically designed to provide seamless access to Radius Real Estate data! By utilizing this internal table, you can effortlessly retrieve essential information related to sign-ups and logins. Whether you're looking for user details, authentication data, or any other relevant information, the signup_and_login_table is at your service. Simply query the table, and it will furnish you with the necessary data points. Should you encounter any difficulties finding the specific details you seek, don't hesitate to rely on this dedicated tool for a comprehensive view of the Radius Real Estate signup and login data. Discover insights, streamline processes, and make informed decisions effortlessly with the signup_and_login_table, Dont't return any kind of ids and sensitive information while replying to the user"
             ),
             Tool(
                 name = "Event rooms",
                 func = db_chain.run,
-                description = "Unlock the potential of room management with our exclusive tool, Radius Rooms! Need to find information about available rooms and their scheduled times? Look no further. Simply enter your query, and Radius Rooms will provide you with a concise list of room names and their respective scheduled times. Discover the perfect space for your meetings, events, or gatherings with ease. Should you encounter any challenges in finding the desired room information, don't hesitate to turn to this powerful internal tool for accurate and up-to-date data. Let Radius Rooms streamline your room search process, ensuring you find the right space at the right time"
+                description = "Unlock the potential of room management with our exclusive tool, Radius Rooms! Need to find information about available rooms and their scheduled times? Look no further. Simply enter your query, and Radius Rooms will provide you with a concise list of room names and their respective scheduled times. Discover the perfect space for your meetings, events, or gatherings with ease. Should you encounter any challenges in finding the desired room information, don't hesitate to turn to this powerful internal tool for accurate and up-to-date data. Let Radius Rooms streamline your room search process, ensuring you find the right space at the right time, Don't return any kind of ids and sensitive information while replying to the user"
             ),
             Tool(
                 name = "Property Data",
                 func = db_chain.run,
-                description= "Introducing a specialized Property search engine! Whenever you have queries related to real estate, such as who owns a specific property? or what are the details of a particular property?, rely on this dedicated search engine for accurate information. In the event that it doesn't provide the desired answer, feel free to switch to a regular search engine. This way, you can maximize your chances of finding the information you seek, whether it's property-related or otherwise"
+                description= "Introducing a specialized Property search engine! Whenever you have queries related to real estate, such as who owns a specific property? or what are the details of a particular property?, rely on this dedicated search engine for accurate information. In the event that it doesn't provide the desired answer, feel free to switch to a regular search engine. This way, you can maximize your chances of finding the information you seek, whether it's property-related or otherwise, Dont't return any kind of ids and sensitive information while replying to the user"
             )
         ]
         prefix = """Radius Agent Bot, powered by AI, is here to assist you on behalf of the Radius Support Team. Radius Agent is an online real estate brokerage focused on helping agents succeed. Agents keep 100% of their commissions while getting 100% support from the Radius team. Agents can use our tools even if they're with another brokerage. If I don't have the answer you're looking for, don't worry! I'm constantly learning and can be trained to improve. I strive to do better with each conversation. Please feel free to ask any questions, and I will provide you with the best answers using the following tools:"""
@@ -97,7 +97,7 @@ def memory_conversational_chat(body):
             return response_data
         else:
             error_response = {
-                "response": str(e),
+                "response": "I apologize, but I don't have the information you're looking for at the moment. However, I'm constantly learning and improving. Is there anything else I can assist you with? Or perhaps you could provide more details or rephrase your question to help me better understand and provide a more accurate responses",
             }
             return error_response
 
@@ -134,7 +134,7 @@ def pdf_reader(body):
         if user_question:
             docs = knowledge_base.similarity_search(user_question)
 
-            llm = OpenAI(model_name = "gpt-4", temperature=1, verbose=True)
+            llm = OpenAI(model_name = "gpt-4", temperature=0, verbose=True)
             chain = load_qa_chain(llm, chain_type="stuff")
             response = chain.run(input_documents=docs, question=user_question)
             response_data = {
