@@ -134,7 +134,7 @@ def pdf_reader(body):
         if user_question:
             docs = knowledge_base.similarity_search(user_question)
 
-            llm = OpenAI()
+            llm = OpenAI(model_name = "gpt-4", temperature=1, verbose=True)
             chain = load_qa_chain(llm, chain_type="stuff")
             response = chain.run(input_documents=docs, question=user_question)
             response_data = {
