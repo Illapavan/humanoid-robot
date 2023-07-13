@@ -106,11 +106,16 @@ def add_bot_to_channel(body):
 
 def send_message(channel_type, channel_id, user_id, message):
     try:
+        print("-- trying to get the channel connection --")
         channel = server_client.channel(channel_type, channel_id)
+        print("-- able to get the channel connection --")
         if channel is None:
             return
+        print("-- trying to create a user with user-id")    
         channel.create(user_id)
+        print("-- able to create a user with user-id") 
         channel.send_message({"text": message}, user_id)
+        print("-- succesfully send the message --") 
     except Exception as e:
         print("Exception caught while sending bot message to channel with id - " + channel_id)
         print(e)
