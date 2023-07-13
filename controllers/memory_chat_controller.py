@@ -97,7 +97,7 @@ def memory_conversational_chat(body):
             return response_data
         else:
             error_response = {
-                "response": "I apologize, but I don't have the information you're looking for at the moment. However, I'm constantly learning and improving. Is there anything else I can assist you with? Or perhaps you could provide more details or rephrase your question to help me better understand and provide a more accurate responses",
+                "response": str(e)
             }
             return error_response
 
