@@ -47,9 +47,9 @@ def handle_assistant():
         return image_editor(data)
     return jsonify({"message": "Invalid request type."})
 
-@app.route('/.well-known/pki-validation/F9324EF74D7B474B4289563768901F62.txt', methods = ["GET"])
+@app.route('/.well-known/pki-validation/C04F7BD046FA08C0A0A73AD90BD6D30C.txt', methods = ["GET"])
 def httpAuthenticate():
-    return send_from_directory('static', "F9324EF74D7B474B4289563768901F62.txt")
+    return send_from_directory('static', "C04F7BD046FA08C0A0A73AD90BD6D30C.txt")
 
 
 if __name__ == "__main__":
