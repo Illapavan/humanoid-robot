@@ -76,7 +76,7 @@ def memory_conversational_chat(body):
 
         memory = ConversationBufferMemory(memory_key="chat_history", chat_memory=message_history)
 
-        llm_chain = LLMChain(llm=OpenAI(model_name = "GPT-3.5", temperature=0), prompt=prompt)
+        llm_chain = LLMChain(llm=OpenAI(model_name = "gpt-3.5-turbo", temperature=0), prompt=prompt)
         agent = ZeroShotAgent(llm_chain=llm_chain, tools=tools, verbose=True)
         agent_chain = AgentExecutor.from_agent_and_tools(agent=agent, tools=tools, verbose=True, memory = memory, handle_parsing_errors=True)
         response = agent_chain.run(user_input)
