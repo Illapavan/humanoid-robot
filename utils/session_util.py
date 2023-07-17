@@ -31,7 +31,7 @@ class SessionManager:
         # uri = 'mysql+pymysql://aduser:adxyz123@127.0.0.1:3309/agentdesks'
         uri = self.getDbConnectionURI()
         db = SQLDatabase.from_uri(uri, include_tables=['constellation_dump'], sample_rows_in_table_info=2)
-        llm = OpenAI(temperature=0, verbose=True)
+        llm = OpenAI(model_name = "gpt-3.5-turbo-16k", temperature=0, verbose=True)
         db_chain = SQLDatabaseChain.from_llm(llm, db, verbose=True)
         return db_chain
 
