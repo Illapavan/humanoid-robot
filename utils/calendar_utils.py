@@ -95,11 +95,10 @@ class GoogleCalendarReader(BaseReader):
 
     def getCalendarSlots(self, duration):
         events = self.getCalendarEvents()
-        print(events)
         available_slots = []
 
     # Set the start and end time for the time slot range
-        start_time = datetime.datetime.now()
+        start_time = datetime.datetime.now(timezone.utc)
         print(start_time)
         end_time = start_time.replace(hour=20, minute=0, second=0, tzinfo=timezone.utc)  # Set the end time as 8:00 PM
         print(end_time)
@@ -107,34 +106,45 @@ class GoogleCalendarReader(BaseReader):
         # Set the duration for the time slots (30 minutes)
         slot_duration = timedelta(minutes=duration)
 
-        
-        events.sort(key=lambda x: x["start"].get("dateTime"))
-
-       
-        for i in range(len(events) - 1):
-            current_event_end = datetime.datetime.strptime(events[i]["end"].get("dateTime"), "%Y-%m-%dT%H:%M:%S%z")
-            next_event_start = datetime.datetime.strptime(events[i + 1]["start"].get("dateTime"), "%Y-%m-%dT%H:%M:%S%z")
-
-            if next_event_start - current_event_end >= slot_duration:
+        if not events:
+            # if there are no events, creating slots for the whole day
+            current_time = start_time
+            while current_time < end_time:
                 available_slots.append(
                     {
-                        "start": current_event_end,
-                        "end": current_event_end + slot_duration,
+                        "start": current_time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        "end": (current_time + slot_duration).strftime("%Y-%m-%dT%H:%M:%S%z"),
                     }
                 )
-        # Check if there is an available slot after the last event
-        last_event_end = datetime.datetime.strptime(events[-1]["end"].get("dateTime"), "%Y-%m-%dT%H:%M:%S%z")
+                current_time += slot_duration   
 
-        if end_time - last_event_end >= slot_duration:
-            # There is a gap between the last event and the end time
-            available_slots.append(
-                {
-                    "start": last_event_end,
-                    "end": last_event_end + slot_duration,
-                }
-            )
+        else :
+            events.sort(key=lambda x: x["start"].get("dateTime"))
 
-        # Print the available time slots
+        
+            for i in range(len(events) - 1):
+                current_event_end = datetime.datetime.strptime(events[i]["end"].get("dateTime"), "%Y-%m-%dT%H:%M:%S%z")
+                next_event_start = datetime.datetime.strptime(events[i + 1]["start"].get("dateTime"), "%Y-%m-%dT%H:%M:%S%z")
+
+                if next_event_start - current_event_end >= slot_duration:
+                    available_slots.append(
+                        {
+                            "start": current_event_end,
+                            "end": current_event_end + slot_duration,
+                        }
+                    )
+            # Check if there is an available slot after the last event
+            if events and "end" in events[-1]:
+                last_event_end = datetime.datetime.strptime(events[-1]["end"].get("dateTime"), "%Y-%m-%dT%H:%M:%S%z")
+                if end_time - last_event_end >= slot_duration:
+                    # There is a gap between the last event and the end time
+                    available_slots.append(
+                        {
+                            "start": last_event_end,
+                            "end": last_event_end + slot_duration,
+                        }
+                    )
+
         slots = []
         for slot in available_slots:
             slots.append(
@@ -146,7 +156,7 @@ class GoogleCalendarReader(BaseReader):
         response = {
             "slots": slots
         }    
-        return response    
+        return response
 
 
 
@@ -156,7 +166,7 @@ class GoogleCalendarReader(BaseReader):
         data = request.get_json()
         startTime = self.convertTimestampToISO8601Format(data.get("startTime"))
         endTime = self.convertTimestampToISO8601Format(data.get("endTime"))
-        description = data.get("description")
+        description = "Connect with <> Radius Support"
         event = {
             'summary': description,
             'start': {
@@ -166,7 +176,11 @@ class GoogleCalendarReader(BaseReader):
             'end': {
                 'dateTime': endTime,
                 'timeZone': 'Asia/Kolkata',
-            }
+            },
+            'attendees': [
+                {'email' : "radiussupport@radiusagent.com"},
+                {'email' : data.get("email")}
+            ]
         }
         event = service.events().insert(calendarId='primary', body=event).execute()
         response = {
@@ -209,6 +223,6 @@ class GoogleCalendarReader(BaseReader):
         return formatted_datetime   
 
     def convertISO8601ToTimestamp(self, formatted_datetime):
-        dt = datetime.datetime.strptime(str(formatted_datetime), "%Y-%m-%d %H:%M:%S%z")
+        dt = datetime.datetime.strptime(str(formatted_datetime), "%Y-%m-%dT%H:%M:%S%z")
         timestamp = (dt - datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)).total_seconds()
         return int(timestamp)
