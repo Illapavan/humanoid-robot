@@ -42,36 +42,24 @@ def memory_conversational_chat(body):
             Tool(
                 name="Google Search Engine",
                 func=search.run,
-                description="Enhance your search capabilities with the power of Google Search! If you ever find yourself unable to locate the desired information using this search tool, fear not. Simply request the assistance of our specialized Property search engine, tailored specifically for real estate-related queries. With this combination of tools at your disposal, you can confidently explore a wide range of topics, from general information to intricate property details. Let the comprehensive knowledge of Google Search be your guide, and should you encounter any obstacles, harness the specialized expertise of our Property search engine to uncover those elusive real estate answers"
-            ),
-            Tool(
-                name = "Agents Database",
-                func = db_chain.run,
-                description = "Introducing the powerful signup_and_login_table tool, specifically designed to provide seamless access to Radius Real Estate data! By utilizing this internal table, you can effortlessly retrieve essential information related to sign-ups and logins. Whether you're looking for user details, authentication data, or any other relevant information, the signup_and_login_table is at your service. Simply query the table, and it will furnish you with the necessary data points. Should you encounter any difficulties finding the specific details you seek, don't hesitate to rely on this dedicated tool for a comprehensive view of the Radius Real Estate signup and login data. Discover insights, streamline processes, and make informed decisions effortlessly with the signup_and_login_table, Dont't return any kind of ids and sensitive information while replying to the user"
-            ),
-            Tool(
-                name = "Event rooms",
-                func = db_chain.run,
-                description = "Unlock the potential of room management with our exclusive tool, Radius Rooms! Need to find information about available rooms and their scheduled times? Look no further. Simply enter your query, and Radius Rooms will provide you with a concise list of room names and their respective scheduled times. Discover the perfect space for your meetings, events, or gatherings with ease. Should you encounter any challenges in finding the desired room information, don't hesitate to turn to this powerful internal tool for accurate and up-to-date data. Let Radius Rooms streamline your room search process, ensuring you find the right space at the right time, Don't return any kind of ids and sensitive information while replying to the user"
+                description="This tool is used for general search related queries. use this tool if you failed to get results from other tools more"
             ),
             Tool(
                 name = "Property Data",
                 func = db_chain.run,
-                description= "Introducing a specialized Property search engine! Whenever you have queries related to real estate, such as who owns a specific property? or what are the details of a particular property?, rely on this dedicated search engine for accurate information. In the event that it doesn't provide the desired answer, feel free to switch to a regular search engine. This way, you can maximize your chances of finding the information you seek, whether it's property-related or otherwise, Dont't return any kind of ids and sensitive information while replying to the user"
+                description= "This tool is used for property related queries. It gives you the data related to any mls property available in the database."
             )
         ]
-        prefix = """Radius Agent Bot, powered by AI, is here to assist you on behalf of the Radius Support Team. Radius Agent is an online real estate brokerage focused on helping agents succeed. Agents keep 100% of their commissions while getting 100% support from the Radius team. Agents can use our tools even if they're with another brokerage. If I don't have the answer you're looking for, don't worry! I'm constantly learning and can be trained to improve. I strive to do better with each conversation. Please feel free to ask any questions. If you want to greet the bot, simply say "Hello" or something similar, and I will respond politely asking how you are doing."""
-        suffix = """Begin!"
-
-        {chat_history}
+        prefix = """You are a Radius Agent Bot, powered by AI, here to assist on behalf of the Radius Support Team. Radius Agent is an online real estate brokerage focused on helping agents succeed. If you don't have the answer you're looking for, don't worry!. Just reply you dont know. Be polite"""
+        suffix = """Begin!
         Question: {input}
-        {agent_scratchpad}"""
+        Action : {agent_scratchpad}"""
 
         prompt = ZeroShotAgent.create_prompt(
             tools,
             prefix=prefix,
             suffix=suffix,
-            input_variables=["input", "chat_history", "agent_scratchpad"]
+            input_variables=["input", "agent_scratchpad"]
         )
 
         memory = ConversationBufferMemory(memory_key="chat_history", chat_memory=message_history)
