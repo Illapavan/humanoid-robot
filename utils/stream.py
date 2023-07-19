@@ -104,21 +104,33 @@ def add_bot_to_channel(body):
         print(e)
 
 
-def send_message(channel_type, channel_id, user_id, message):
+def send_message(channel_type, channel_id, user_id, message, attachments=None):
+    retries = 1
     try:
         print("-- trying to get the channel connection --")
         channel = server_client.channel(channel_type, channel_id)
         print("-- able to get the channel connection --")
         if channel is None:
             return
-        print("-- trying to create a user with user-id")    
+        print("-- trying to create a user with user-id")
         channel.create(user_id)
-        print("-- able to create a user with user-id") 
-        channel.send_message({"text": message}, user_id)
-        print("-- succesfully send the message --") 
+        print("-- able to create a user with user-id")
+        body = {"text": message}
+        if attachments is not None:
+            body["attachments"] = attachments
+        print(body)
+        channel.send_message(body, user_id)
+        print("-- successfully send the message --")
     except Exception as e:
-        print("Exception caught while sending bot message to channel with id - " + channel_id)
+        retries = retries+1
+        print("Exception parsing")
+        print(e.__str__())
         print(e)
+        if e.__str__() == "Connection refused" and retries < 3:
+            send_message(channel_type, channel_id, user_id, message, attachments)
+        else:
+            print("Exception caught while sending bot message to channel with id - " + channel_id)
+            print(e)
 
 def message_handler(body):
     try:
@@ -162,7 +174,7 @@ def message_handler(body):
             send_message(channel_type, channel_id, bot_member_id, response.get("response"))
         elif data_type == 'get_calendar_slots':
             response = getCalendarSlots()
-            send_message(channel_type, channel_id, bot_member_id, response.get("response"))
+            send_message(channel_type, channel_id, bot_member_id, response.get("response"), [{"isDate": True}])
         elif data_type == 'query_on_calendar':
             response = queryOnCalendar(data)
             send_message(channel_type, channel_id, bot_member_id, response.get("response"))
