@@ -159,8 +159,12 @@ class GoogleCalendarReader(BaseReader):
         response = {
             "slots": slots
         }    
-        return response
-
+        # return response
+        slots_string = ""
+        for i, slot in enumerate(slots, start=1):
+            slots_string += f"Slot {i}: {slot['start']} - {slot['end']}\n"
+        slotString = slots_string.rstrip()    
+        return slotString
 
 
     def createCalendarEvent(self, data):
