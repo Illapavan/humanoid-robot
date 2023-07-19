@@ -178,7 +178,6 @@ class GoogleCalendarReader(BaseReader):
         credentials = self._get_credentials()
         print("check 1")
         service = build("calendar", "v3", credentials=credentials)
-        data = request.get_json()
         print("check 2")
         st = data.get('startTime')
         et = data.get('endTime')
