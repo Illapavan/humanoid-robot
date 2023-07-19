@@ -161,7 +161,7 @@ def message_handler(body):
             response = createCalendarevent(data)
             send_message(channel_type, channel_id, bot_member_id, response.get("response"))
         elif data_type == 'get_calendar_slots':
-            response = getCalendarSlots(data)
+            response = getCalendarSlots()
             send_message(channel_type, channel_id, bot_member_id, response.get("response"))
         elif data_type == 'query_on_calendar':
             response = queryOnCalendar(data)
