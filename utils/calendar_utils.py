@@ -177,7 +177,9 @@ class GoogleCalendarReader(BaseReader):
         data = request.get_json()
         print("check 2")
         startTime = self.convertTimestampToISO8601Format(data.get("startTime"))
+        print("check 3")
         endTime = self.convertTimestampToISO8601Format(data.get("endTime"))
+        print("check 4")
         description = "Connect with <> Radius Support"
         event = {
             'summary': description,
@@ -195,6 +197,7 @@ class GoogleCalendarReader(BaseReader):
             ]
         }
         event = service.events().insert(calendarId='primary', body=event).execute()
+        print("check 5")
         response = {
             "response" : "Success! Your event has been added to the calendar. Enjoy your day!"
         }
@@ -230,8 +233,11 @@ class GoogleCalendarReader(BaseReader):
         return events
 
     def convertTimestampToISO8601Format(self, timestamp):
+        print("here 1")
         dt = datetime.datetime.fromtimestamp(timestamp)
+        print("here 2")
         formatted_datetime = dt.strftime("%Y-%m-%dT%H:%M:%S%z")
+        print("here 3")
         return formatted_datetime   
 
     def convertISO8601ToTimestamp(self, formatted_datetime):
