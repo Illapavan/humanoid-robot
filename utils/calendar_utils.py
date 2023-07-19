@@ -176,9 +176,13 @@ class GoogleCalendarReader(BaseReader):
         service = build("calendar", "v3", credentials=credentials)
         data = request.get_json()
         print("check 2")
-        startTime = self.convertTimestampToISO8601Format(data.get("startTime"))
+        st = data.get('startTime')
+        et = data.get('endTime')
+        print(startTime)
+        print(endTime)
+        startTime = self.convertTimestampToISO8601Format(st)
         print("check 3")
-        endTime = self.convertTimestampToISO8601Format(data.get("endTime"))
+        endTime = self.convertTimestampToISO8601Format(et)
         print("check 4")
         description = "Connect with <> Radius Support"
         event = {
