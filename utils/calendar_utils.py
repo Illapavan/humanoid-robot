@@ -164,6 +164,9 @@ class GoogleCalendarReader(BaseReader):
         for i, slot in enumerate(slots, start=1):
             slots_string += f"Slot {i}: {slot['start']} - {slot['end']}\n"
         slotString = slots_string.rstrip()    
+        resp = {
+            "response" : slotString
+        }
         return slotString
 
 
