@@ -172,8 +172,10 @@ class GoogleCalendarReader(BaseReader):
 
     def createCalendarEvent(self, data):
         credentials = self._get_credentials()
+        print("check 1")
         service = build("calendar", "v3", credentials=credentials)
         data = request.get_json()
+        print("check 2")
         startTime = self.convertTimestampToISO8601Format(data.get("startTime"))
         endTime = self.convertTimestampToISO8601Format(data.get("endTime"))
         description = "Connect with <> Radius Support"
@@ -194,7 +196,7 @@ class GoogleCalendarReader(BaseReader):
         }
         event = service.events().insert(calendarId='primary', body=event).execute()
         response = {
-            "response" : "event created succesfully"
+            "response" : "Success! Your event has been added to the calendar. Enjoy your day!"
         }
         return response
   

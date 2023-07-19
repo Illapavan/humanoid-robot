@@ -38,6 +38,7 @@ def queryOnCalendar(data):
 #     documents = loader.load_data(start_date=date.today(), number_of_results=50)
 
 def createCalendarevent(data):
+    print("the data is", data)
     response = loader.createCalendarEvent(data)
     return response
 
