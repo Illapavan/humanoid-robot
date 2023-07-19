@@ -47,7 +47,7 @@ def memory_conversational_chat(body):
             Tool(
                 name = "Property Data",
                 func = db_chain.run,
-                description= "This tool is used for property related queries. It gives you the data related to any mls property available in the database."
+                description= "This tool is used for realestate related queries about availabilty of property related queries. If failed to load any info fetch the result from the google"
             )
         ]
         prefix = """You are a Radius Agent Bot, powered by AI, here to assist on behalf of the Radius Support Team. Radius Agent is an online real estate brokerage focused on helping agents succeed. If you don't have the answer you're looking for, don't worry!. You have memory use that to reply if that doesn't helps. Just reply you dont know. Be polite"""
