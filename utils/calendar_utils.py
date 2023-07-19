@@ -167,7 +167,7 @@ class GoogleCalendarReader(BaseReader):
         resp = {
             "response" : slotString
         }
-        return slotString
+        return resp
 
 
     def createCalendarEvent(self, data):
