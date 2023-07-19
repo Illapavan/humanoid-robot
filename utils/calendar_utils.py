@@ -95,6 +95,7 @@ class GoogleCalendarReader(BaseReader):
 
     def getCalendarSlots(self, duration):
         events = self.getCalendarEvents()
+        print(events)
         available_slots = []
         print("check 1")
 
@@ -109,6 +110,7 @@ class GoogleCalendarReader(BaseReader):
         print("check 2")
 
         if not events:
+            print("here")
             # if there are no events, creating slots for the whole day
             current_time = start_time
             while current_time < end_time:
@@ -118,9 +120,11 @@ class GoogleCalendarReader(BaseReader):
                         "end": (current_time + slot_duration).strftime("%Y-%m-%dT%H:%M:%S%z"),
                     }
                 )
-                current_time += slot_duration   
+                current_time += slot_duration
+
 
         else :
+            print('dd')
             events.sort(key=lambda x: x["start"].get("dateTime"))
 
         
@@ -178,12 +182,14 @@ class GoogleCalendarReader(BaseReader):
         print("check 2")
         st = data.get('startTime')
         et = data.get('endTime')
-        print(startTime)
-        print(endTime)
+        print(st)
+        print(et)
         startTime = self.convertTimestampToISO8601Format(st)
+        print("--the start time is --", startTime)
         print("check 3")
         endTime = self.convertTimestampToISO8601Format(et)
         print("check 4")
+        print("--the end time is --", endTime)
         description = "Connect with <> Radius Support"
         event = {
             'summary': description,
@@ -238,6 +244,7 @@ class GoogleCalendarReader(BaseReader):
 
     def convertTimestampToISO8601Format(self, timestamp):
         print("here 1")
+        print(timestamp)
         dt = datetime.datetime.fromtimestamp(timestamp)
         print("here 2")
         formatted_datetime = dt.strftime("%Y-%m-%dT%H:%M:%S%z")
