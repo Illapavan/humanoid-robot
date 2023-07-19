@@ -43,6 +43,7 @@ def createCalendarevent(data):
 
 def getCalendarSlots():
     # duration = data.get('duration')
+    print("This is here")
     duration = 30
     response = loader.getCalendarSlots(duration)
     return response    

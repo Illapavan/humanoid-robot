@@ -96,6 +96,7 @@ class GoogleCalendarReader(BaseReader):
     def getCalendarSlots(self, duration):
         events = self.getCalendarEvents()
         available_slots = []
+        print("check 1")
 
     # Set the start and end time for the time slot range
         start_time = datetime.datetime.now(timezone.utc)
@@ -105,6 +106,7 @@ class GoogleCalendarReader(BaseReader):
 
         # Set the duration for the time slots (30 minutes)
         slot_duration = timedelta(minutes=duration)
+        print("check 2")
 
         if not events:
             # if there are no events, creating slots for the whole day
@@ -146,6 +148,7 @@ class GoogleCalendarReader(BaseReader):
                     )
 
         slots = []
+        print("check 3")
         for slot in available_slots:
             slots.append(
                 {
