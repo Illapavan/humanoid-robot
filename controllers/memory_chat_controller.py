@@ -40,6 +40,11 @@ def memory_conversational_chat(body):
 
         tools = [
             Tool(
+                name="General question related to realestate other than property",
+                func=search.run,
+                description="Use this tool more to answer general realestate question"
+            ),
+            Tool(
                 name="Google Search Engine",
                 func=search.run,
                 description="This tool is used for general search related queries. use this tool if you failed to get results from other tools more"
