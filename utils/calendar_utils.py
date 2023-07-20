@@ -97,7 +97,6 @@ class GoogleCalendarReader(BaseReader):
         events = self.getCalendarEvents()
         print(events)
         available_slots = []
-        print("check 1")
 
     # Set the start and end time for the time slot range
         start_time = datetime.datetime.now(timezone.utc)
@@ -107,10 +106,8 @@ class GoogleCalendarReader(BaseReader):
 
         # Set the duration for the time slots (30 minutes)
         slot_duration = timedelta(minutes=duration)
-        print("check 2")
 
         if not events:
-            print("here")
             # if there are no events, creating slots for the whole day
             current_time = start_time
             while current_time < end_time:
@@ -121,13 +118,30 @@ class GoogleCalendarReader(BaseReader):
                     }
                 )
                 current_time += slot_duration
+            slots = []
+            for slot in available_slots:
+                slots.append(
+                    {
+                        "start" : self.convertISO8601ToTimestamp(slot['start']),
+                        "end" : self.convertISO8601ToTimestamp(slot['end']),
+                    }
+                )
+            response = {
+                "slots": slots
+            }    
+            # return response
+            slots_string = ""
+            for i, slot in enumerate(slots, start=1):
+                slots_string += f"{slot['start']} - {slot['end']}, "
+            slotString = slots_string.rstrip(",")    
+            resp = {
+                "response" : slotString
+            }
+            return resp    
 
 
         else :
-            print('dd')
             events.sort(key=lambda x: x["start"].get("dateTime"))
-
-        
             for i in range(len(events) - 1):
                 current_event_end = datetime.datetime.strptime(events[i]["end"].get("dateTime"), "%Y-%m-%dT%H:%M:%S%z")
                 next_event_start = datetime.datetime.strptime(events[i + 1]["start"].get("dateTime"), "%Y-%m-%dT%H:%M:%S%z")
@@ -151,44 +165,35 @@ class GoogleCalendarReader(BaseReader):
                         }
                     )
 
-        slots = []
-        print("check 3")
-        for slot in available_slots:
-            slots.append(
-                {
-                    "start" : self.convertISO8601ToTimestamp(slot['start']),
-                    "end" : self.convertISO8601ToTimestamp(slot['end']),
-                }
-            )
-        response = {
-            "slots": slots
-        }    
-        # return response
-        slots_string = ""
-        for i, slot in enumerate(slots, start=1):
-            slots_string += f"{slot['start']} - {slot['end']}, "
-        slotString = slots_string.rstrip(",")    
-        resp = {
-            "response" : slotString
-        }
-        return resp
+            slots = []
+            for slot in available_slots:
+                slots.append(
+                    {
+                        "start" : self.convertISO8601ToTimestampT(slot['start']),
+                        "end" : self.convertISO8601ToTimestampT(slot['end']),
+                    }
+                )
+            response = {
+                "slots": slots
+            }    
+            # return response
+            slots_string = ""
+            for i, slot in enumerate(slots, start=1):
+                slots_string += f"{slot['start']} - {slot['end']}, "
+            slotString = slots_string.rstrip(",")    
+            resp = {
+                "response" : slotString
+            }
+            return resp
 
 
     def createCalendarEvent(self, data):
         credentials = self._get_credentials()
-        print("check 1")
         service = build("calendar", "v3", credentials=credentials)
-        print("check 2")
         st = data.get('startTime')
         et = data.get('endTime')
-        print(st)
-        print(et)
         startTime = self.convertTimestampToISO8601Format(st)
-        print("--the start time is --", startTime)
-        print("check 3")
         endTime = self.convertTimestampToISO8601Format(et)
-        print("check 4")
-        print("--the end time is --", endTime)
         description = "Connect with <> Radius Support"
         event = {
             'summary': description,
@@ -206,7 +211,6 @@ class GoogleCalendarReader(BaseReader):
             ]
         }
         event = service.events().insert(calendarId='primary', body=event).execute()
-        print("check 5")
         response = {
             "response" : "Success! Your event has been added to the calendar. Enjoy your day!"
         }
@@ -252,5 +256,10 @@ class GoogleCalendarReader(BaseReader):
 
     def convertISO8601ToTimestamp(self, formatted_datetime):
         dt = datetime.datetime.strptime(str(formatted_datetime), "%Y-%m-%dT%H:%M:%S%z")
+        timestamp = (dt - datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)).total_seconds()
+        return int(timestamp)
+
+    def convertISO8601ToTimestampT(self, formatted_datetime):
+        dt = datetime.datetime.strptime(str(formatted_datetime), "%Y-%m-%d %H:%M:%S%z")
         timestamp = (dt - datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)).total_seconds()
         return int(timestamp)
