@@ -96,7 +96,7 @@ def memory_conversational_chat(body):
             return response_data
         else:
             error_response = {
-                "response": str(e)
+                "response": "I apologize, but it seems I'm unable to provide a satisfactory answer to your question at the moment. As an AI language model, my knowledge is based on the data I was trained on, which has its limitations and may not cover all topics or be up-to-date. If you have any other questions or need assistance with a different topic, feel free to ask, and I'll do my best to help you."
             }
             return error_response
 
