@@ -104,8 +104,7 @@ def add_bot_to_channel(body):
         print(e)
 
 
-def send_message(channel_type, channel_id, user_id, message, attachments=None):
-    retries = 1
+def send_message(channel_type, channel_id, user_id, message, attachments=None, retries=1):
     try:
         print("-- trying to get the channel connection --")
         channel = server_client.channel(channel_type, channel_id)
@@ -127,7 +126,7 @@ def send_message(channel_type, channel_id, user_id, message, attachments=None):
         print(e.__str__())
         print(e)
         if e.__str__() == "Connection refused" and retries < 3:
-            send_message(channel_type, channel_id, user_id, message, attachments)
+            send_message(channel_type, channel_id, user_id, message, attachments, retries)
         else:
             print("Exception caught while sending bot message to channel with id - " + channel_id)
             print(e)
