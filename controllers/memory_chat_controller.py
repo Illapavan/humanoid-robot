@@ -1,7 +1,7 @@
 from flask import request, jsonify, abort
 from io import BytesIO
 import boto3
-from utils.openai_util import ChatOpenAI
+from langchain.chat_models import ChatOpenAI
 from utils.session_util import SessionManager
 from PyPDF2 import PdfReader
 from langchain.text_splitter import CharacterTextSplitter
@@ -50,24 +50,35 @@ def memory_conversational_chat(body):
                 description= "This tool is used for realestate related queries about availabilty of property related queries. If failed to load any info fetch the result from the google"
             )
         ]
-        prefix = """You are a Radius Agent Bot, powered by AI, here to assist on behalf of the Radius Support Team. Radius Agent is an online real estate brokerage focused on helping agents succeed. If you don't have the answer you're looking for, don't worry!. You have memory use that to reply if that doesn't helps. Just reply you dont know. Be polite"""
-        suffix = """Begin!
-        Question: {input}
-        Action : {agent_scratchpad}"""
+        # prefix = """You are a Radius Agent Bot, powered by AI, here to assist on behalf of the Radius Support Team. Radius Agent is an online real estate brokerage focused on helping agents succeed. If you don't have the answer you're looking for, don't worry!. You have memory use that to reply if that doesn't helps. Just reply you dont know. Be polite"""
+        # suffix = """Begin!
+        # Question: {input}
+        # Action : {agent_scratchpad}"""
 
-        prompt = ZeroShotAgent.create_prompt(
-            tools,
-            prefix=prefix,
-            suffix=suffix,
-            input_variables=["input", "agent_scratchpad"]
-        )
+        # prompt = ZeroShotAgent.create_prompt(
+        #     tools,
+        #     prefix=prefix,
+        #     suffix=suffix,
+        #     input_variables=["input", "agent_scratchpad"]
+        # )
 
         memory = ConversationBufferMemory(memory_key="chat_history", chat_memory=message_history)
 
-        llm_chain = LLMChain(llm=OpenAI(model_name = "gpt-3.5-turbo-16k", temperature=0), prompt=prompt)
-        agent = ZeroShotAgent(llm_chain=llm_chain, tools=tools, verbose=True)
-        agent_chain = AgentExecutor.from_agent_and_tools(agent=agent, tools=tools, verbose=True, memory = memory, handle_parsing_errors=True)
-        response = agent_chain.run(user_input)
+        # llm_chain = LLMChain(llm=OpenAI(model_name = "gpt-3.5-turbo-16k", temperature=0), prompt=prompt)
+        # agent = ZeroShotAgent(llm_chain=llm_chain, tools=tools, verbose=True)
+        # agent_chain = AgentExecutor.from_agent_and_tools(agent=agent, tools=tools, verbose=True, memory = memory, handle_parsing_errors=True)
+        # response = agent_chain.run(user_input)
+        my_agent = initialize_agent(
+            tools=tools,
+            llm = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo-16k"),
+            agent='conversational-react-description',
+            verbose=True,
+            memory=memory,
+            max_iterations=3,
+            early_stopping_method='generate',
+            handle_parsing_errors="Check your output and make sure it conforms!",
+        )
+        response = my_agent.run(user_input)
 
         message_history.add_ai_message(str({"role": "bot", "content": response}))
 
