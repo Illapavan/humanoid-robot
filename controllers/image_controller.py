@@ -101,9 +101,8 @@ def image_editor(body):
         image_data = io.BytesIO()
         image.save(image_data, format="PNG")
         image_data.seek(0)
-    image = Image.open(io.BytesIO(response.content))
-    with Image.open(BytesIO(image_data)) as img:
-        width, height = img.size
+    image = Image.open(image_data)
+    width, height = image.size
 
 
     available_sizes = ['256x256', '512x512', '1024x1024']
