@@ -48,11 +48,6 @@ def memory_conversational_chat(body):
                 name="Google Search Engine",
                 func=search.run,
                 description="This tool is used for general search related queries. use this tool if you failed to get results from other tools more"
-            ),
-            Tool(
-                name = "Property Data",
-                func = db_chain.run,
-                description= "This tool is used for realestate related queries about availabilty of property related queries. If failed to load any info fetch the result from the google"
             )
         ]
         # prefix = """You are a Radius Agent Bot, powered by AI, here to assist on behalf of the Radius Support Team. Radius Agent is an online real estate brokerage focused on helping agents succeed. If you don't have the answer you're looking for, don't worry!. You have memory use that to reply if that doesn't helps. Just reply you dont know. Be polite"""
