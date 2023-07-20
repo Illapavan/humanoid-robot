@@ -123,7 +123,6 @@ def send_message(channel_type, channel_id, user_id, message, attachments=None, r
     except Exception as e:
         retries = retries+1
         print("Exception parsing")
-        print(e.__str__())
         print(e)
         if (e.__str__() == "Connection refused." or e.__str__() == "Connection aborted.") and retries <= 3:
             send_message(channel_type, channel_id, user_id, message, attachments, retries)
@@ -170,12 +169,15 @@ def message_handler(body):
             send_message(channel_type, channel_id, bot_member_id, response.get("url"))
         elif data_type == 'create_calendar_event':
             response = createCalendarevent(data)
+            print("-- The response from bot is -- ", response)
             send_message(channel_type, channel_id, bot_member_id, response.get("response"))
         elif data_type == 'get_calendar_slots':
             response = getCalendarSlots()
+            print("-- The response from bot is -- ", response)
             send_message(channel_type, channel_id, bot_member_id, response.get("response"), [{"isDate": True}])
         elif data_type == 'query_on_calendar':
             response = queryOnCalendar(data)
+            print("-- The response from bot is -- ", response)
             send_message(channel_type, channel_id, bot_member_id, response.get("response"))
         return True
     except Exception as e:
