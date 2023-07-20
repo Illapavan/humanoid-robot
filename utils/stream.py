@@ -124,7 +124,7 @@ def send_message(channel_type, channel_id, user_id, message, attachments=None, r
         retries = retries+1
         print("Exception parsing")
         print(e)
-        if (e.__str__() == "Connection refused." or e.__str__() == "Connection aborted.") and retries <= 3:
+        if ("Connection refused" in e.__str__() or "Connection aborted" in e.__str__()) and retries <= 3:
             send_message(channel_type, channel_id, user_id, message, attachments, retries)
         else:
             print("Exception caught while sending bot message to channel with id - " + channel_id)
